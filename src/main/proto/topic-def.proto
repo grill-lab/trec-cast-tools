@@ -24,14 +24,14 @@ message Topic {
 
 // The source stores where the topic was created from including
 // important metadata about its provenance.
-message TopicSource {
+message Source {
     // A short description of the provenance of the topic,
     // e.g. MARCO, Session track, or other TREC track.
     // We might consider making this a struct / enum.
-    SourceType type = 1;
+    SourceType provenance = 1;
 
     // Additional metadata about the source, e.g. the topic
-    // id or external information.
+    // id or external identifying information.
     string metadata = 2;
 
     enum SourceType {
