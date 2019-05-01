@@ -57,9 +57,4 @@ message Turn {
     // A 'clean' utterance with coreference and explicit context
     // resolved.
     string rewritten_utterance = 3;
-
-    // Optional: The order of this turn in the overall conversation.
-    // Note: This could be used to represent a conversation tree.
-    // JD: Do we want / need this?
-    string parent_turn_id = 4;
 }
