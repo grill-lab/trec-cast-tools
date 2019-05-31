@@ -6,8 +6,8 @@ package cast.topics;
 // topic. It contains the title / description of the topic as well
 // as the conversational utterances of the conversation.
 message Topic {
-    // A unique identifier for the topic.
-    string id = 1;
+    // A unique number that identifies the topic.
+    int32 number = 1;
 
     // A short 'title' description of the topic.
     string title = 2;
@@ -34,6 +34,7 @@ message TopicSource {
     // id or other information needed.
     string metadata = 2;
 
+    // The type of topic.
     enum SourceType {
         MANUAL = 0;
         MARCO = 1;
@@ -48,8 +49,9 @@ message TopicSource {
 // user utterance for the step in the turn.
 message Turn {
 
-    // An identifier for this turn, unique to the topic.
-    string id = 1;
+    // A numeric turn identifiers for this turn indicating its position
+    // in the dialog.
+    int32 number = 1;
 
     // Required: the user query / utterance for this turn.
     string raw_utterance = 2;
@@ -57,9 +59,4 @@ message Turn {
     // A 'clean' utterance with coreference and explicit context
     // resolved.
     string rewritten_utterance = 3;
-
-    // Optional: The order of this turn in the overall conversation.
-    // Note: This could be used to represent a conversation tree.
-    // JD: Do we want / need this?
-    string parent_turn_id = 4;
 }
