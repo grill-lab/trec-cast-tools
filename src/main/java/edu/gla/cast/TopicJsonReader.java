@@ -1,93 +1,62 @@
 package edu.gla.cast;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import cast.topics.TopicDef.Topic;
+import com.google.protobuf.util.JsonFormat;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import cast.topics.TopicDef.*;
-import com.google.protobuf.util.JsonFormat;
-
 /**
- * Read in a topic text file and create a protocol buffer / json file output.
+ * Read in a topic JSON file and create a protocol buffer topic representation.
  *
  */
-public class TopicTextToProto {
+public class TopicJsonReader {
 
 
   /**
-   * Parses a topic text file and produces a list of Topic objects.
-   * A text file has the format:
-   * Number: 1
-   * Title: sample topic
-   * Description: A sample topic description.
-   * 1  This is the first turn
-   * 2  This is the second turn.
-   * ...
-   * A blank line separates topics.
-   *
+   * Parses a topic JSON file and produces a list of Topic objects.
    */
-  public List<Topic> parseTopicTextFile(String topicFile) throws Exception {
-    List<String> lines = Files.readAllLines(Paths.get(topicFile));
-    Topic.Builder topic = Topic.newBuilder();
-    List<Topic> topicList = new ArrayList<Topic>();
-    for (String line : lines) {
-      System.out.println(line);
-      String lowercased = line.toLowerCase();
-      String[] fields = line.split("\t");
-      if (lowercased.startsWith("number:")) {
-        String numberString = line.replace("Number:", "").trim();
-        int number = Integer.parseInt(numberString);
-        topic.setNumber(number);
-      } else if (lowercased.startsWith("title:")) {
-        String titleString = line.replace("Title:", "").trim();
-        topic.setTitle(titleString);
-      } else if (lowercased.startsWith("description:")) {
-        String descriptionString = line.replace("Description:", "").trim();
-        topic.setDescription(descriptionString);
-      } else if (lowercased.isEmpty()) {
-        topicList.add(topic.build());
-        topic = Topic.newBuilder();
-      } else if (fields.length == 2) {
-        // An individual turn in the topic.
-        int turnNumber = Integer.parseInt(fields[0]);
-        String utterance = fields[1];
-        Turn.Builder turn = Turn.newBuilder();
-        turn.setNumber(turnNumber);
-        turn.setRawUtterance(utterance);
-        topic.addTurn(turn.build());
-      } else {
-        throw new Exception("Invalid text file format on line: " + line);
+  public List<Topic> readJsonTopics(String topicFile) throws Exception {
+    FileInputStream fileInputStream = new FileInputStream(topicFile);
+    List<Topic> topicList = new ArrayList();
+
+    try {
+      Reader reader = new InputStreamReader(fileInputStream);
+      JSONParser parser = new JSONParser();
+      JSONArray array = (JSONArray) parser.parse(reader);
+      System.out.println(array);
+
+      JsonFormat.Parser formatParser = JsonFormat.parser();
+      Iterator<JSONObject> iterator = array.iterator();
+      while (iterator.hasNext()) {
+        // This is a bit annoying -- is there a better way of going
+        // from jsonobject to proto except via string?
+        String jsonString = iterator.next().toJSONString();
+        Topic.Builder builder = Topic.newBuilder();
+        formatParser.merge(jsonString, builder);
+        topicList.add(builder.build());
       }
+    } finally {
+      fileInputStream.close();
     }
-    topicList.add(topic.build());
     return topicList;
   }
 
-  public void writeTopicToFile(List<Topic> topics, String outputFile) throws IOException {
-    FileWriter writer = new FileWriter(outputFile);
-    try {
-      for (Topic topic : topics) {
-        String jsonString = JsonFormat.printer()
-                .preservingProtoFieldNames()
-                .print(topic);
-        System.out.println("Writing json string: " + jsonString);
-        writer.write(jsonString);
-      }
-    } finally {
-      writer.close();
-    }
-
-  }
 
   public static void main(String[] args) throws Exception{
     System.out.println("Loading topics.");
-    TopicTextToProto topicTextToProto = new TopicTextToProto();
-    List<Topic> topicList = topicTextToProto.parseTopicTextFile(args[0]);
+    TopicJsonReader topicTextToProto = new TopicJsonReader();
+    List<Topic> topicList = topicTextToProto.readJsonTopics(args[0]);
     System.out.println("Number of topics:" + topicList.size());
-    topicTextToProto.writeTopicToFile(topicList, args[1]);
+    for (Topic topic : topicList) {
+      System.out.println(topic.toString());
+    }
   }
 }
