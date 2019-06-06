@@ -1,16 +1,9 @@
 package edu.gla.cast;
 
 import cast.topics.TopicDef.Topic;
-import com.google.protobuf.util.JsonFormat;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -21,7 +14,7 @@ public class TopicProtoReader {
 
 
   /**
-   * Parses a topic JSON file and produces a list of Topic objects.
+   * Parses a topic protocol buffer file and produces a list of Topic objects.
    */
   public List<Topic> readTopics(String topicFile) throws Exception {
     FileInputStream fileInputStream = new FileInputStream(topicFile);
