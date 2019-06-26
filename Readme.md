@@ -1,3 +1,5 @@
+# Tools and scripts for TREC CAsT
+
 ## Topic file processing
 Code for processing the topic files in Java (all three formats) is available in:
 src/main/java
@@ -22,5 +24,3 @@ To run the parser for MSMARCO:
     and DUPLICATE_FILE is the file containing the list of deduplicated documents.
 
 NOTE: The scripts have been tested with Python 3.6 (but anything >= 3.5 should work). 
-=======
-# Tools and scripts for TREC CAsT
