@@ -30,7 +30,7 @@ public class TopicTextReader {
    */
   public List<Topic> parseTopicTextFile(String topicFile) throws Exception {
     List<String> lines = Files.readAllLines(Paths.get(topicFile));
-    Topic.Builder topic = Topic.newBuilder();
+    Topic.Builder topicBuilder = Topic.newBuilder();
     List<Topic> topicList = new ArrayList<Topic>();
     for (String line : lines) {
       System.out.println(line);
@@ -39,30 +39,51 @@ public class TopicTextReader {
       if (lowercased.startsWith("number:")) {
         String numberString = line.replace("Number:", "").trim();
         int number = Integer.parseInt(numberString);
-        topic.setNumber(number);
+        topicBuilder.setNumber(number);
       } else if (lowercased.startsWith("title:")) {
         String titleString = line.replace("Title:", "").trim();
-        topic.setTitle(titleString);
+        topicBuilder.setTitle(titleString);
       } else if (lowercased.startsWith("description:")) {
         String descriptionString = line.replace("Description:", "").trim();
-        topic.setDescription(descriptionString);
+        topicBuilder.setDescription(descriptionString);
       } else if (lowercased.isEmpty()) {
-        topicList.add(topic.build());
-        topic = Topic.newBuilder();
+        Topic topic = topicBuilder.build();
+        checkTopic(topic);
+        topicList.add(topic);
+        topicBuilder = Topic.newBuilder();
       } else if (fields.length == 2) {
         // An individual turn in the topic.
-        int turnNumber = Integer.parseInt(fields[0]);
+        int turnNumber = Integer.parseInt(fields[0].trim());
         String utterance = fields[1];
         TopicDef.Turn.Builder turn = TopicDef.Turn.newBuilder();
         turn.setNumber(turnNumber);
         turn.setRawUtterance(utterance);
-        topic.addTurn(turn.build());
+        topicBuilder.addTurn(turn.build());
       } else {
         throw new Exception("Invalid text file format on line: " + line);
       }
     }
-    topicList.add(topic.build());
+    Topic topic = topicBuilder.build();
+    checkTopic(topic);
+    topicList.add(topic);
     return topicList;
+  }
+
+  private void checkTopic(Topic topic) throws Exception {
+    if (topic == null) {
+      throw new IllegalArgumentException("topic is null");
+    }
+    if (topic.getTurnList().isEmpty()) {
+      throw new IllegalArgumentException("topic has no turns, it must have at least one turn.");
+    }
+
+    int curIdx = 1;
+    for (TopicDef.Turn turn : topic.getTurnList()) {
+      if (turn.getNumber() != curIdx) {
+        throw new IllegalArgumentException("topic turns are out of order." + turn.toString());
+      }
+      curIdx++;
+    }
   }
 
 
