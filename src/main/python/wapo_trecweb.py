@@ -4,7 +4,26 @@ import sys
 import os
 import codecs
 
-def write_to_file(fp, data, i):
+
+
+def parse_sim_file(filename):
+    """
+    Reads the deduplicated documents file and stores the
+    duplicate passage ids into a dictionary
+    """
+
+    sim_dict = {}
+    lines = open(filename).readlines()
+    for line in lines:
+        data = line.strip().split(':')
+        if len(data[1]) > 0:
+            sim_docs = data[-1].split(',')
+            for docs in sim_docs:
+                sim_dict[docs] = 1
+
+    return sim_dict
+
+def write_to_file(fp, data):
 
     """
     Converts all the available paragraphs into the trecweb format
@@ -28,6 +47,8 @@ def write_to_file(fp, data, i):
     for idx, each in enumerate(paras):
         if each == None:
             continue
+        elif idx in sim_dict:
+            continue
         elif 'subtype' in each:
             if each['subtype'] == 'paragraph':
                 body =  each['content']
@@ -50,7 +71,7 @@ def write_to_file(fp, data, i):
                     content += '</DOC>\n'
                     fp.write(content)
 
-def parse(file_path, dumper):
+def parse(file_path, dumper, sim_dict):
 
     """
     Iterates over each file in the WAPO dataset.
@@ -73,14 +94,20 @@ def parse(file_path, dumper):
         for i, data in enumerate(lines):
             data1 = data.strip()
             data1 = json.loads(data1)
-            write_to_file(fp, data1, i)
+            write_to_file(fp, data1, sim_dict)
         fp.close()
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
-        print("Usage: python wapo_trecweb.py DATAPATH DUMP_PATH")
-        print("Example: python wapo_trecweb.py ../wapo_path ../wapo_dump_dir")
+        print("Usage: python wapo_trecweb.py DATAPATH DUMP_PATH DEDUP_FILE")
+        print("Example: python wapo_trecweb.py ../wapo_path ../wapo_dump_dir similarity_file")
         exit(0)
-    dumper = sys.argv[2] 
+
     data_path = sys.argv[1]
-    parse(data_path, dumper)
+    dumper = sys.argv[2]
+    sim_file = sys.argv[3]
+
+    print("Loading similarity file.")
+    sim_dict = parse_sim_file(sim_file)
+
+    parse(data_path, dumper, sim_dict)
