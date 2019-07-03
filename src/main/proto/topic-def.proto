@@ -19,7 +19,7 @@ message Topic {
     repeated Turn turn = 4;
 
     // The source of how the topic was created.
-    TopicSource topic_source = 5;
+    Source topic_source = 5;
 }
 
 // The source stores where the topic was created from including
