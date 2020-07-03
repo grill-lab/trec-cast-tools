@@ -73,7 +73,7 @@ public class TopicTextTransformer {
 
   public static void main(String[] args) throws Exception{
     System.out.println("Loading topics.");
-    TopicTextReader reader = new TopicTextReader();
+    TopicTextReaderY2 reader = new TopicTextReaderY2();
     List<Topic> topicList = reader.parseTopicTextFile(args[0]);
     System.out.println("Number of topics:" + topicList.size());
     TopicTextTransformer transformer = new TopicTextTransformer();

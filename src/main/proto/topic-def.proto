@@ -59,4 +59,7 @@ message Turn {
     // A 'clean' utterance with coreference and explicit context
     // resolved.
     string rewritten_utterance = 3;
+
+    // The canonical result id returned by the system.
+    string canonical_result_id = 4;
 }
