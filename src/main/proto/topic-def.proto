@@ -58,8 +58,26 @@ message Turn {
 
     // A 'clean' utterance with coreference and explicit context
     // resolved.
-    string rewritten_utterance = 3;
+    //string rewritten_utterance = 3;
 
-    // The canonical result id returned by the system.
-    string canonical_result_id = 4;
+    // A rewwritten utterance with coreference and explicit context
+    // automatically resolved.
+    string automatic_rewritten_utterance = 4;
+
+    // The canonical result id returned by the automatic system.
+    string automatic_canonical_result_id = 5;
+
+    // A 'clean' utterance with coreference and explicit context
+    // resolved, "same as rewritten_utterance"
+    string manual_rewritten_utterance = 6;
+
+    // The canonical result id returned by the manual system.
+    string manual_canonical_result_id = 7;
+
+    // The TRUE canonical result.
+    string canonical_result_id = 8;
+
+
+
+
 }
