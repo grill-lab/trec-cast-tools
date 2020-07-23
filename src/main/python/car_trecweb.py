@@ -30,14 +30,14 @@ def writer(p, fp, meta_dict={}):
     if meta_dict and p.para_id in meta_dict:
         title = meta_dict[p.para_id]["title"]
         headings = meta_dict[p.para_id]["headings"]
+        title_string = (u'<TITLE>\n')
         if title and not title.isspace():
-            content += (u'<TITLE>\n')
-            content += (title)
-            content += (u'\n</TITLE>\n')
+            title_string += (title)
         if headings and not headings.isspace():
-            content += (u'<HEADINGS>\n')
-            content += (headings)
-            content += (u'\n</HEADINGS>\n')
+            title_string += (u' -- ')
+            title_string += (headings)
+        title_string += (u'\n</TITLE>\n')
+        content += title_string
     elif meta_dict and p.para_id not in meta_dict:
         logging.warning(f'No metadata for ID: {p.para_id}')
     content += (u'<BODY>\n')
