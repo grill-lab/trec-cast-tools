@@ -1,5 +1,6 @@
 package edu.gla.cast;
 
+import cast.topics.TopicDef;
 import cast.topics.TopicDef.Topic;
 import com.google.protobuf.util.JsonFormat;
 import org.json.simple.JSONArray;
@@ -56,7 +57,9 @@ public class TopicJsonReader {
     List<Topic> topicList = topicTextToProto.readJsonTopics(args[0]);
     System.out.println("Number of topics:" + topicList.size());
     for (Topic topic : topicList) {
-      System.out.println(topic.toString());
+      for (TopicDef.Turn turn : topic.getTurnList()) {
+          System.out.println(topic.getNumber() + "-" + turn.getNumber() + " " + turn.getRawUtterance());
+      }
     }
   }
 }

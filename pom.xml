@@ -6,7 +6,7 @@
 
     <groupId>trec-cast</groupId>
     <artifactId>trec-cast-tools</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

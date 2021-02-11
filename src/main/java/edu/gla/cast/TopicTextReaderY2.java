@@ -71,21 +71,44 @@ public class TopicTextReaderY2 {
           turnBuilder = TopicDef.Turn.newBuilder();
         }
         curTurn++;
-      } else if (lowercased.startsWith("utterance:")) {
+      } else if (lowercased.startsWith("query turn")) {
+        String result = line.replace("Query Turn Dependence:", "").replace("Query Turn dependence:", "").trim();
+        if (!result.trim().isEmpty()) {
+          String[] split = result.split(",");
+          ArrayList<Integer> turnIds = new ArrayList();
+          if (split.length > 0) {
+            for (String turnString : split) {
+              int turnId = Integer.parseInt(turnString.trim());
+              turnIds.add(turnId);
+            }
+            turnBuilder.addAllQueryTurnDependence(turnIds);
+          }
+        }
+    } else if (lowercased.startsWith("result turn")) {
+      String result = line.replace("Result Turn Dependence:", "").replace("Result Turn dependence:", "").trim();
+      if (!result.trim().isEmpty()) {
+        turnBuilder.setResultTurnDependence(Integer.parseInt(result.trim()));
+      }
+    } else if (lowercased.startsWith("utterance:")) {
         String rawUtterance = line.replace("Utterance:", "").trim();
         turnBuilder.setRawUtterance(rawUtterance);
       }  else if (lowercased.startsWith("resolved:")) {
       String resolvedUtterance = line.replace("Resolved:", "").trim();
-      turnBuilder.setRewrittenUtterance(resolvedUtterance);
+      turnBuilder.setManualRewrittenUtterance(resolvedUtterance);
       }  else if (lowercased.startsWith("result")) {
         String result = line.replace("Result(s):", "").replace("Result:", "").replace("Results:", "").trim();
         turnBuilder.setCanonicalResultId(result);
-    }
-      else {
-        System.out.println("Ignoring other field: " + line);
+      }
+       else {
+        if (!line.trim().isEmpty()) {
+          System.out.println("Ignoring other field: " + line);
+        }
         //throw new Exception("Invalid text file format on line: " + line);
       }
     }
+    turnBuilder.setNumber(curTurn);
+    topicBuilder.addTurn(turnBuilder.build());
+
     Topic topic = topicBuilder.build();
     checkTopic(topic);
     topicList.add(topic);
