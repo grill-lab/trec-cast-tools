@@ -77,6 +77,14 @@ message Turn {
     // The TRUE canonical result.
     string canonical_result_id = 8;
 
+    // A custom rewwritten utterance
+    string custom_rewritten_utterance = 9;
+
+    // Dependent parent turn for query dependence
+    repeated int32 query_turn_dependence = 10;
+
+    // Dependent parent turn for result dependence
+    int32 result_turn_dependence = 11;
 
 
 
