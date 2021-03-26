@@ -16,14 +16,20 @@
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <os-maven-plugin.version>1.6.0</os-maven-plugin.version>
 
-        <protobuf.version>3.8.0</protobuf.version>
-        <protoc.version>3.8.0</protoc.version>
+        <grpc.version>1.36.0</grpc.version>
+        <protobuf.version>3.15.6</protobuf.version>
+        <protoc.version>3.15.6</protoc.version>
         <proto-google-common-protos.version>1.12.0</proto-google-common-protos.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
-
+        <guava.version>30.1-android</guava.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
@@ -38,6 +44,26 @@
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-stub</artifactId>
+            <version>${grpc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-stub</artifactId>
+            <version>${grpc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.api.grpc</groupId>
+            <artifactId>proto-google-common-protos</artifactId>
+            <version>${proto-google-common-protos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lemurproject.galago</groupId>
+            <artifactId>core</artifactId>
+            <version>3.13-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -95,6 +121,10 @@
                 </executions>
                 <configuration>
                     <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact>
+                    <pluginId>grpc-java</pluginId>
+                    <pluginArtifact>
+                        io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
+                    </pluginArtifact>
                 </configuration>
             </plugin>
         </plugins>
