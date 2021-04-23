@@ -11,8 +11,7 @@ message SearchRequest {
     google.protobuf.Timestamp time = 1; // The time of the creation of the request
     string client_id = 2; // The ID of the client the request is sent from; required.
     string query = 3; // Raw query string to execute.
-    string collection_id = 4; // Optional field; default used otherwise.
-    Parameters parameters = 5; // Optional other query parameters.
+    Parameters parameters = 4; // Optional other query parameters.
 }
 
 // Optional query-level parameters.
@@ -39,6 +38,8 @@ message ScoredResult {
     double score = 2;
     int32 rank = 3;
     string title = 4;
-    string short_description = 5;
-    string full_text = 6;
+    string url = 5;
+    string short_description = 6;
+    string full_text = 7;
+    string raw_document = 8;
 }
