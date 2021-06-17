@@ -1,1 +1,5 @@
 /env
+/datasets
+/duplicate_files/wapo-near-duplicates
+/trecweb_files
+/src/__pycache__
