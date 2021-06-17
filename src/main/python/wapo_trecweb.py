@@ -37,11 +37,6 @@ def get_document(data, dup_dict):
     else:
         url = '/#'
     
-#     if "www.washingtonpost.com" not in data["article_url"]:
-#         url = "https://www.washingtonpost.com" + data['article_url'] if data['article_url'] else '/#'
-#     else:
-#          url = data['article_url'] if data['article_url'] else '/#'
-    
     body = ''
     contents = data['contents']
     title = 'No Title'
@@ -55,62 +50,10 @@ def get_document(data, dup_dict):
     
     if data['title'] != None:
         title = data['title'].replace("\n", " ")
-    
-#     #strip html formatting from text
-#     bs4Soup = BeautifulSoup(body, 'html.parser')
-#     body = bs4Soup.text
+
     
     return idx, body, title, url
-    
-    
-#     content = (u'<DOC>\n')
-#     content += (u'<DOCNO>')
-#     content += (main_idx)
-#     content += (u'</DOCNO>\n')
-#     content += (u'<DOCHDR>\n')
-#     content += (u'\n')
-#     content += (u'</DOCHDR>\n')
-#     content += (u'<HTML>\n')
-#     content += (u'<TITLE>')
-#     content += (title)
-#     content += (u'</TITLE>\n')
-#     content += (u'<URL>')
-#     content += (url)
-#     content += (u'</URL>\n')
-#     content += (u'<BODY>\n')
-#     content += (body)
-#     content += (u'\n')
-#     content += (u'</BODY>\n')
-#     content += ('</HTML>\n')
-#     content += (u'</DOC>\n')
-#     fp.write(content)
 
-# def parse(file_path, dumper, dup_dict):
-
-#     """ 
-#     Iterates over each document in the WAPO dataset.
-#     Content of each doc is read, and dumped in the trecweb
-#     format.
-#     """
-    
-#     input_file = os.path.basename(file_path)
-
-#     if not os.path.exists(dumper):
-#         os.mkdir(dumper)
-    
-#     #for file in os.listdir(file_path):
-#     dumper_file = os.path.join(dumper, input_file + '.xml')
-#     fp = codecs.open(dumper_file, 'w', 'utf-8')
-#     print("Opening ", file_path)
-#     lines = open(file_path, 'r').readlines()
-#     print("Read ", file_path)
-#     tl = len(lines)
-#     for i, data in tqdm(enumerate(lines), total=tl):
-#         data1 = data.strip()
-#         data1 = json.loads(data1)
-#         write_to_file(fp, data1, i, dup_dict)
-        
-#     fp.close()
 
 def create_duplicate_dictionary(duplicate_file):
     '''
