@@ -8,8 +8,6 @@ import sys
 import os
 import io
 import codecs
-from src.helpers import convert_to_trecweb
-from src.PassageChunker import RegexPassageChunker, SpacyPassageChunker
 
 def parse_sim_file(filename):
     """
@@ -25,15 +23,31 @@ def parse_sim_file(filename):
             sim_docs = data[-1].split(',')
             for docs in sim_docs:
                 sim_dict[docs] = 1
-                
-    print("There are {} duplicates".format(len(sim_dict)))
+
     return sim_dict
 
+def write_to_file(idx, text):
+    # Writes the passage contents in trecweb format
+    content = (u'<DOC>\n')
+    content += (u'<DOCNO>')
+    content += (str(idx))
+    content += (u'</DOCNO>\n')
+    content += (u'<DOCHDR>\n')
+    content += (u'\n')
+    content += (u'</DOCHDR>\n')
+    content += (u'<HTML>\n')
+    content += (u'<BODY>\n')
+    content += (text)
+    content += (u'\n')
+    content += (u'</BODY>\n')
+    content += (u'</HTML>\n')
+    content += (u'</DOC>\n')
+    fp.write(content)
 
 if __name__ == "__main__":
 
     if len(sys.argv) < 3:
-        print("USAGE: python3 marco_trecweb.py path_to_collection.tsv path_of_dumpdir duplicates_file")
+        print("USAGE: python marco_trecweb.py path_to_collection.tsv path_of_dumpdir similarity_file")
         exit(0)
     
     marco_file = sys.argv[1]
@@ -58,27 +72,18 @@ if __name__ == "__main__":
     # Read the ranking collections file
     with io.open(marco_file, "r", encoding="utf-8") as input:
 
-        for line in tqdm(input, total=3213835):
-            
-            try:
-                idx, url, title, text = line.strip().split('\t')
-                
-                # if the id is a duplicate, don't add it
-                if idx in sim_dict:
-                    continue
-                
-                
-                idx = 'MARCO_' + str(idx)
-                # Create a trecweb entry for a passage
-                passageChunker = RegexPassageChunker(idx, title, text, url)
-                passages = passageChunker.create_passages()
-                
-                for passage in passages:
-                    trecweb_passage = convert_to_trecweb(passage['id'], passage['title'], passage['body'], passage['url'])
-                    fp.write(trecweb_passage)
-            except:
-                #either idx, url, title, or body is missing
+        for line in tqdm(input, total=8841823):
+
+            # Split to get the original id and text
+            idx, text = line.strip().split('\t', 1)
+            idx = 'MARCO_' + idx
+
+            # if the id is a duplicate, don't add it
+            if idx in sim_dict:
                 continue
+
+            # Create a trecweb entry for a passage
+            write_to_file(idx, text)
 
     input.close()
     fp.close()
