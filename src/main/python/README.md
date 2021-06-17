@@ -2,7 +2,7 @@
 
 The scripts in this directory help with creating trecweb files (from the Marco document, KILT, and WaPo collections) that can be used for indexing with tools like Anserini or Solr. As part of the trecweb creation process, each document in a collection is chunked into passages of at most 250 words. 
 
-Each passage has an ID, url, title, and body. The passage ID is of the form <Document ID>:<Passage Number>. You can refer to http://www.treccast.ai/ to learn more about the Document ID format used for CAsT. Passage Number simply is the position of a passage within a document. Passages from the same document have the same url and title.
+Each passage has an ID, url, title, and body. The passage ID is of the form `<Document ID>:<Passage Number>`. You can refer to http://www.treccast.ai/ to learn more about the Document ID format used for CAsT. Passage Number simply is the position of a passage within a document. Passages from the same document have the same url and title.
 
 ## How to use
 
