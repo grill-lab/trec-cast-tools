@@ -1,27 +1,43 @@
-def convert_to_trecweb(passage_id, doc_title, passage_text, doc_url):
+def convert_to_trecweb(passage_id, doc_title, doc_body, doc_url):
     
     '''
-    Takes a chunked passage from a document and converts it to trecweb format
+    Takes a document with passage spilts and converts it to trecweb format
     '''
-    content = (u'<DOC>\n')
-    content += (u'<DOCNO>')
-    content += (passage_id)
-    content += (u'</DOCNO>\n')
-    content += (u'<DOCHDR>\n')
-    content += (u'\n')
-    content += (u'</DOCHDR>\n')
-    content += (u'<HTML>\n')
-    content += (u'<TITLE>')
-    content += (doc_title)
-    content += (u'</TITLE>\n')
-    content += (u'<URL>')
-    content += (doc_url)
-    content += (u'</URL>\n')
-    content += (u'<BODY>\n')
-    content += (passage_text)
-    content += (u'\n')
-    content += (u'</BODY>\n')
-    content += (u'</HTML>\n')
-    content += (u'</DOC>\n')
+    content = '<DOC>\n'
+    content += '<DOCNO>'
+    content += passage_id
+    content += '</DOCNO>\n'
+    content += '<DOCHDR>\n'
+    # content += '\n'
+    content += '</DOCHDR>\n'
+    content += '<HTML>\n'
+    content += '<TITLE>'
+    content += doc_title
+    content += '</TITLE>\n'
+    content += '<URL>'
+    content += doc_url
+    content += '</URL>\n'
+    content += '<BODY>\n'
+    content += doc_body
+    # content += '\n'
+    content += '</BODY>\n'
+    content += '</HTML>\n'
+    content += '</DOC>\n'
+    content += '\n'
     
     return content
+
+
+def add_passage_ids(passages):
+
+    passage_number = 0
+    passage_splits = ''
+
+    for passage in passages:
+        passage_splits += '<PASSAGE {}>\n'.format(passage["id"])
+        passage_splits += passage["body"] + '\n'
+        passage_splits += '</PASSAGE>\n'
+        passage_number += 1
+
+    
+    return passage_splits

@@ -2,14 +2,15 @@
 # Python 3.6
 # Install tqdm for tracking progress
 
+import multiprocessing
 from tqdm import tqdm
-import json
+# import json
 import sys
 import os
 import io
 import codecs
-from src.helpers import convert_to_trecweb
-from src.PassageChunker import RegexPassageChunker, SpacyPassageChunker
+from src.helpers import convert_to_trecweb, add_passage_ids
+from src.PassageChunker import SpacyPassageChunker
 
 def parse_sim_file(filename):
     """
@@ -30,20 +31,8 @@ def parse_sim_file(filename):
     return sim_dict
 
 
-if __name__ == "__main__":
-
-    if len(sys.argv) < 3:
-        print("USAGE: python3 marco_trecweb.py path_to_collection.tsv path_of_dumpdir duplicates_file")
-        exit(0)
+def write_marco_to_trecweb(marco_file, dump_dir, sim_file):
     
-    marco_file = sys.argv[1]
-    dump_dir = sys.argv[2]
-    sim_file = sys.argv[3]
-
-    # Create the directory (for dumping files) if it doesn't exists
-    if not os.path.exists(dump_dir):
-        os.mkdir(dump_dir)
-
     print("Loading similarity file.")
     sim_dict = parse_sim_file(sim_file)
 
@@ -61,7 +50,7 @@ if __name__ == "__main__":
         for line in tqdm(input, total=3213835):
             
             try:
-                idx, url, title, text = line.strip().split('\t')
+                idx, url, title, body = line.strip().split('\t')
                 
                 # if the id is a duplicate, don't add it
                 if idx in sim_dict:
@@ -70,15 +59,40 @@ if __name__ == "__main__":
                 
                 idx = 'MARCO_' + str(idx)
                 # Create a trecweb entry for a passage
-                passageChunker = RegexPassageChunker(idx, title, text, url)
+                passageChunker = SpacyPassageChunker(body)
+                # passageChunker = RegexPassageChunker(body)
                 passages = passageChunker.create_passages()
                 
-                for passage in passages:
-                    trecweb_passage = convert_to_trecweb(passage['id'], passage['title'], passage['body'], passage['url'])
-                    fp.write(trecweb_passage)
+                passage_splits = add_passage_ids(passages)
+
+                trecweb_format = convert_to_trecweb(idx, title, passage_splits, url)
+                fp.write(trecweb_format)
+
             except:
                 #either idx, url, title, or body is missing
                 continue
 
     input.close()
     fp.close()
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv) < 3:
+        print("USAGE: python3 marco_trecweb.py path_to_collection.tsv path_of_dumpdir duplicates_file")
+        exit(0)
+    
+    marco_file = sys.argv[1]
+    dump_dir = sys.argv[2]
+    sim_file = sys.argv[3]
+
+    # Create the directory (for dumping files) if it doesn't exists
+    if not os.path.exists(dump_dir):
+        os.mkdir(dump_dir)
+
+
+    p1 = multiprocessing.Process(target=write_marco_to_trecweb, args=(marco_file, dump_dir, sim_file, ))
+    p1.start()
+
+    print("Done!")
+    
