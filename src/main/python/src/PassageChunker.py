@@ -1,11 +1,15 @@
 import re
 import spacy
-# nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("en_core_web_sm", exclude=["parser"]) #->senter
+nlp.enable_pipe("senter")
 
 
-from spacy.lang.en import English
-nlp = English()
-nlp.add_pipe("sentencizer")
+# from spacy.lang.en import English #-> sentencizer
+# nlp = English()
+# nlp.add_pipe("sentencizer")
+
+# nlp = spacy.load("en_core_web_sm") #->normal model
+
 
 class SpacyPassageChunker:
     def __init__(self, text):

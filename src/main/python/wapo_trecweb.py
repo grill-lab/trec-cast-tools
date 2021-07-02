@@ -12,9 +12,17 @@ from src.PassageChunker import SpacyPassageChunker
 
 
 def get_document(data, dup_dict):
-    """ 
-    Writes item to a file in trecweb format
-   
+    """Extracts the ID, title, url, and body of each document
+
+    Args:
+        data (dictionary): Contianer for a WaPo document
+        dup_dict (dictionary): A lookup dictionary for duplicates in the WaPo collection
+
+    Returns:
+        str: ID of the WaPo document
+        str: Contents of the WaPo document
+        str: Title of the WaPo document
+        str: Url of the WaPo document
     """
     
     if dup_dict.get(data["id"]) == 1:
@@ -54,9 +62,14 @@ def get_document(data, dup_dict):
 
 
 def create_duplicate_dictionary(duplicate_file):
-    '''
-    Creates a duplicate dictionary to help with removing duplicates from the collection
-    '''
+    """Creates a lookup dictionary from the WaPo duplicates file
+
+    Args:
+        duplicate_file (file): WaPo duplicates file
+
+    Returns:
+        dict: duplicates lookup dictionary
+    """
     dup_dict = {}
     data_dups = open(duplicate_file).readlines()
     for each in data_dups:
@@ -69,7 +82,45 @@ def create_duplicate_dictionary(duplicate_file):
     return dup_dict
 
 
-def write_marco_to_trecweb(duplicate_file, dumper, file_path):
+def write_document(data, fp, dup_dict):
+    """Writes a WaPo document to trecweb
+
+    Args:
+        data (json str): Wapo document
+        fp (str): File path
+        dup_dict (dict): Duplicates dictionary
+    """
+    data1 = data.strip()
+    data1 = json.loads(data1)
+
+    try:
+        idx, body, title, url = get_document(data1, dup_dict)
+        passageChunker = SpacyPassageChunker(body)
+        passages = passageChunker.create_passages()
+
+        passage_splits = add_passage_ids(passages)
+
+        trecweb_format = convert_to_trecweb(idx, title, passage_splits, url)
+        fp.write(trecweb_format)
+        
+
+    except:
+        return
+
+    
+
+if __name__ == '__main__':
+    if len(sys.argv) < 4:
+        print("Usage: python3 wapo_trecweb.py DATAPATH DUMP_PATH DUPLICATE_FILE")
+        print("Example: python wapo_clean_parser.py ../wapo_path ../wapo_dump_dir wapo-near-duplicates")
+        exit(0)
+
+
+    duplicate_file = sys.argv[3]
+    dumper = sys.argv[2] 
+    file_path = sys.argv[1]
+
+
     dup_dict = create_duplicate_dictionary(duplicate_file)
     
     input_file = os.path.basename(file_path)
@@ -84,42 +135,17 @@ def write_marco_to_trecweb(duplicate_file, dumper, file_path):
     lines = open(file_path, 'r').readlines()
     print("Read ", file_path)
     tl = len(lines)
+
+
+    processes = []
     for i, data in tqdm(enumerate(lines), total=tl):
-        data1 = data.strip()
-        data1 = json.loads(data1)
+        p = multiprocessing.Process(target=write_document, args=(data, fp, dup_dict))
+        processes.append(p)
+        p.start()
+    
+    for process in processes:
+        process.join()
 
         
-        
-        try:
-            idx, body, title, url = get_document(data1, dup_dict)
-            passageChunker = SpacyPassageChunker(body)
-            # passageChunker = RegexPassageChunker(body)
-            passages = passageChunker.create_passages()
-
-            passage_splits = add_passage_ids(passages)
-
-            trecweb_format = convert_to_trecweb(idx, title, passage_splits, url)
-            fp.write(trecweb_format)
-            
-
-        except:
-            continue
         
     fp.close()
-    
-
-if __name__ == '__main__':
-    if len(sys.argv) < 4:
-        print("Usage: python3 wapo_trecweb.py DATAPATH DUMP_PATH DUPLICATE_FILE")
-        print("Example: python wapo_clean_parser.py ../wapo_path ../wapo_dump_dir wapo-near-duplicates")
-        exit(0)
-
-
-    duplicate_file = sys.argv[3]
-    dumper = sys.argv[2] 
-    file_path = sys.argv[1]
-
-    p1 = multiprocessing.Process(target=write_marco_to_trecweb, args=(duplicate_file, dumper, file_path, ))
-    p1.start()
-
-    print("Done!")

@@ -13,9 +13,14 @@ from src.helpers import convert_to_trecweb, add_passage_ids
 from src.PassageChunker import SpacyPassageChunker
 
 def parse_sim_file(filename):
-    """
-    Reads the deduplicated documents file and stores the 
+    """Reads the deduplicated documents file and stores the 
     duplicate passage ids into a dictionary
+
+    Args:
+        filename (str): Path to MARCO duplicates file
+
+    Returns:
+        dict: MARCO duplicates lookup dictionary
     """
 
     sim_dict = {}
@@ -31,49 +36,36 @@ def parse_sim_file(filename):
     return sim_dict
 
 
-def write_marco_to_trecweb(marco_file, dump_dir, sim_file):
-    
-    print("Loading similarity file.")
-    sim_dict = parse_sim_file(sim_file)
+def write_document(line, fp, sim_dict):
+    """Writes MARCO doc to trecweb
 
-    input_file = os.path.basename(marco_file)
+    Args:
+        line : Marco doc
+        fp : trecweb file path
+        sim_dict : duplicates lookup dict
+    """
+    try:
+        idx, url, title, body = line.strip().split('\t')
+        
+        # if the id is a duplicate, don't add it
+        if idx in sim_dict:
+            return
+        
+        
+        idx = 'MARCO_' + str(idx)
+        # Create a trecweb entry for a passage
+        passageChunker = SpacyPassageChunker(body)
+        # passageChunker = RegexPassageChunker(body)
+        passages = passageChunker.create_passages()
+        
+        passage_splits = add_passage_ids(passages)
 
-    print("Starting processing.")
-    print("Output directory: " + dump_dir)
-    dumper_file = os.path.join(dump_dir, input_file + '.xml')
-    print("Writing output to: " + dumper_file)
-    fp = codecs.open(dumper_file, 'w', 'utf-8')
+        trecweb_format = convert_to_trecweb(idx, title, passage_splits, url)
+        fp.write(trecweb_format)
 
-    # Read the ranking collections file
-    with io.open(marco_file, "r", encoding="utf-8") as input:
-
-        for line in tqdm(input, total=3213835):
-            
-            try:
-                idx, url, title, body = line.strip().split('\t')
-                
-                # if the id is a duplicate, don't add it
-                if idx in sim_dict:
-                    continue
-                
-                
-                idx = 'MARCO_' + str(idx)
-                # Create a trecweb entry for a passage
-                passageChunker = SpacyPassageChunker(body)
-                # passageChunker = RegexPassageChunker(body)
-                passages = passageChunker.create_passages()
-                
-                passage_splits = add_passage_ids(passages)
-
-                trecweb_format = convert_to_trecweb(idx, title, passage_splits, url)
-                fp.write(trecweb_format)
-
-            except:
-                #either idx, url, title, or body is missing
-                continue
-
-    input.close()
-    fp.close()
+    except:
+        #either idx, url, title, or body is missing
+        return
 
 
 if __name__ == "__main__":
@@ -89,10 +81,30 @@ if __name__ == "__main__":
     # Create the directory (for dumping files) if it doesn't exists
     if not os.path.exists(dump_dir):
         os.mkdir(dump_dir)
+    
+    print("Loading similarity file.")
+    sim_dict = parse_sim_file(sim_file)
 
+    input_file = os.path.basename(marco_file)
 
-    p1 = multiprocessing.Process(target=write_marco_to_trecweb, args=(marco_file, dump_dir, sim_file, ))
-    p1.start()
+    print("Starting processing.")
+    print("Output directory: " + dump_dir)
+    dumper_file = os.path.join(dump_dir, input_file + '.xml')
+    print("Writing output to: " + dumper_file)
+    fp = codecs.open(dumper_file, 'w', 'utf-8')
 
-    print("Done!")
+    # Read the ranking collections file
+    processes = [] 
+    with io.open(marco_file, "r", encoding="utf-8") as input:
+
+        for line in tqdm(input, total=3213835):
+            p = multiprocessing.Process(target=write_document, args=(line, fp, sim_dict))
+            processes.append(p)
+            p.start()
+        
+        for process in processes:
+            process.join()
+            
+    input.close()
+    fp.close()
     
