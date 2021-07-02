@@ -1,6 +1,12 @@
+
 syntax = "proto3";
 
-package cast.topics;
+
+//container for all the topics
+message TopicSet {
+    repeated Topic topics = 1;
+    string label = 2;
+}
 
 // A topic is the basic unit of conversation topic. 
 // It contains the title / description of the topic as well as the 
@@ -58,7 +64,7 @@ message Turn {
 
     // A 'clean' utterance with coreference and explicit context
     // resolved.
-    //string rewritten_utterance = 3;
+    string rewritten_utterance = 3;
 
     // A rewwritten utterance with coreference and explicit context
     // automatically resolved.
@@ -85,6 +91,12 @@ message Turn {
 
     // Dependent parent turn for result dependence
     int32 result_turn_dependence = 11;
+
+    //Most relevant passage from the canonical results
+    string passage = 12;
+
+    //ID of the passage from the canonical result based on Spacy passage chunking.
+    int32 passage_id = 13;
 
 
 
