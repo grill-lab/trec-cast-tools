@@ -34,9 +34,9 @@ def add_passage_ids(passages):
     passage_splits = ''
 
     for passage in passages:
-        passage_splits += '<PASSAGE {}>\n'.format(passage["id"])
+        passage_splits += '<passage id={}>\n'.format(passage["id"])
         passage_splits += passage["body"] + '\n'
-        passage_splits += '</PASSAGE>\n'
+        passage_splits += '</passage>\n'
         passage_number += 1
 
     
