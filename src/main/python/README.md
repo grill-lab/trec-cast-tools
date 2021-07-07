@@ -8,22 +8,28 @@ Below is an example of the trecweb file that will be generated for MARCO:
 
 ```
 <DOC>
-<DOCNO>MARCO_D1555982</DOCNO>
+<DOCNO>MARCO_D3178380</DOCNO>
 <DOCHDR>
 </DOCHDR>
 <HTML>
-<TITLE>The hot glowing surfaces of stars emit energy in the form of electromagnetic radiation.?</TITLE>
-<URL>https://answers.yahoo.com/question/index?qid=20071007114826AAwCFvR</URL>
+<TITLE>What is a Crystal?</TITLE>
+<URL>https://www.gemsociety.org/article/crystal/</URL>
 <BODY>
-<PASSAGE 0>
-Science & Mathematics Physics The hot glowing surfaces of stars emit energy in the form of electromagnetic radiation.? It is a good approximation to assume that the emissivity e is equal to 1 for these surfaces. Find the radius of the star Rigel, the bright blue star in the constellation Orion that radiates energy at a rate of 2.7 x 10^32 W and has a surface temperature of 11,000 K. Assume that the star is spherical. Use σ =... show more Follow 3 answers Answers Relevance Rating Newest Oldest Best Answer: Stefan-Boltzmann law states that the energy flux by radiation is proportional to the forth power of the temperature: q = ε · σ · T^4 The total energy flux at a spherical surface of Radius R is Q = q·π·R² = ε·σ·T^4·π·R² Hence the radius is R = √ ( Q / (ε·σ·T^4·π) ) = √ ( 2.7x10+32 W / (1 · 5.67x10-8W/m²K^4 · (1100K)^4 · π) ) 
-</PASSAGE>
-<PASSAGE 1>
-= 3.22x10+13 m Source (s):http://en.wikipedia.org/wiki/Stefan_bolt...schmiso · 1 decade ago0 18 Comment Schmiso, you forgot a 4 in your answer. Your link even says it: L = 4pi (R^2)sigma (T^4). Using L, luminosity, as the energy in this problem, you can find the radius R by doing sqrt (L/ (4pisigma (T^4)). Hope this helps everyone. Caroline · 4 years ago4 1 Comment (Stefan-Boltzmann law) L = 4pi*R^2*sigma*T^4 Solving for R we get: => R = (1/ (2T^2)) * sqrt (L/ (pi*sigma)) Plugging in your values you should get: => R = (1/ (2 (11,000K)^2)) *sqrt ( (2.7*10^32W)/ (pi * (5.67*10^-8 W/m^2K^4))) R = 1.609 * 10^11 m? · 3 years ago0 1 Comment Maybe you would like to learn more about one of these? 
-</PASSAGE>
-<PASSAGE 2>
-Want to build a free website? Interested in dating sites? Need a Home Security Safe? How to order contacts online?
-</PASSAGE>
+<passage id=0>
+What is a Crystal?by International Gem Society“Crystal 1” by Brenda Clarke. Licensed under CC By 2.0. What comes to mind when you think of crystals? Many people might visualize beautiful, mineral objects with smooth faces in regular geometric patterns. Others might imagine elegant glassware. For gemologists, the scientific definition of a crystal goes right to the atomic level. A crystal is a solid whose atoms are arranged in a “highly ordered” repeating pattern. These patterns are called crystal systems. If a mineral has its atoms arranged in one of them, then that mineral is a crystal. Crystal Systems There are seven crystal systems: isometric, tetragonal, orthorhombic, monoclinic, triclinic, hexagonal, and trigonal. Each is distinguished by the geometric parameters of its unit cell, the arrangement of atoms repeated throughout the solid to form the crystal object we can see and feel. For example, an isometric or cubic crystal has a cube as its unit cell. 
+</passage>
+<passage id=1>
+All its sides are equal in length and all its angles are right angles. Well-known gems in this system include diamonds, garnets, and spinels. The isometric crystal system has three axes of the same length that intersect at 90º angles. On the other hand, a triclinic crystal has all sides of different lengths and none of its angles are right angles. These geometric variations mean triclinic crystals can take on many intricate shapes. Well-known gems in the triclinic system include labradorite and turquoise. None of the axes in the triclinic system intersect at 90º and all are different lengths. Non-Crystalline Solids Some objects may appear to be crystals to the naked eye, but outward appearances can be misleading. For gemologists, the atomic structure of the object is the determining factor. Not all objects with regular geometric faces are crystals, not are all solid materials crystals. Amorphous Solids Glass, for example, has a non-crystalline, amorphous atomic structure. 
+</passage>
+<passage id=2>
+Although glassmakers can pour and harden glass into geometric shapes, its atomic structure remains unchanged. People commonly refer to some glassware, such as this, as crystal. However, scientifically speaking, these objects aren’t crystals. Photo by liz west. Licensed under CC By 2.0. Polycrystalline Solids Water that hardens into a single large snowflake is, in fact, a crystal. It crystallizes as it cools, freezes, and moves through the atmosphere. “Snowflake-23” by Yellowcloud. Licensed under CC By 2.0. However, water that hardens into a cube in your freezer’s ice tray isn’t a crystal. Ice cubes, rocks, and common metals are examples of polycrystalline materials. They may contain many crystalline objects. (In the case of ice cubes, they may contain actual ice crystals). Nevertheless, you can’t describe the entire ice cube as having a uniform crystalline structure. 
+</passage>
+<passage id=3>
+“Frozen Ice Cubes IMG_1021” by Steven Depolo. Licensed under CC By 2.0. Cryptocrystalline or microcrystalline rocks consist of microscopic crystals, but, again, those rocks lack a uniform crystalline structure. Some cryptocrystalline materials, such as chalcedony, find use as gem materials in jewelry or decorative objects. The Origins of Crystals Most crystals have natural origins. They can form through inorganic means, such as geological processes within the earth. Others form through organic processes within living creatures. For example, some human kidney stones consist in part of weddellite crystals. Weddellite occurs at the bottom of the Weddell Sea near Antarctica. It can also be found passing very painfully through urinary tracts. “Surface of a Kidney Stone” by Kempf EK. Licensed under CC By-SA 3.0. Laboratories can also create crystals artificially. For example, cubic zirconia, a synthetic gem material, forms with a cubic crystal structure when zirconium and zirconium dioxide are superheated. 
+</passage>
+<passage id=4>
+The resulting material commonly finds use as a diamond imitation or simulant. Colorless cubic zirconia gems often serve as diamond imitations. However, labs can also synthesize this material in many colors. “Multicolor Cubic Zirconia” by Michelle Jo. Licensed under CC By 3.0.
+</passage>
 </BODY>
 </HTML>
 </DOC>
