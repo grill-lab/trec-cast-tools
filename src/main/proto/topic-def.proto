@@ -2,7 +2,8 @@
 syntax = "proto3";
 
 
-//container for all the topics
+// A set of topics (e.g. year 3 evaluation). This allows loading and working
+// with multiple topic sets more clearly.
 message TopicSet {
     repeated Topic topics = 1;
     string label = 2;
@@ -92,10 +93,10 @@ message Turn {
     // Dependent parent turn for result dependence
     int32 result_turn_dependence = 11;
 
-    //Most relevant passage from the canonical results
+    // Most relevant passage from the canonical results
     string passage = 12;
 
-    //ID of the passage from the canonical result based on Spacy passage chunking.
+    // ID of the passage from the canonical result based on Spacy passage chunking.
     int32 passage_id = 13;
 
 
