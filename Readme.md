@@ -56,3 +56,7 @@ To generate the **trecweb file for KILT**, run:
 To generate the **trecweb file for WaPo**, run:
 
 `python wapo_trecweb.py path-to-TREC_Washington_Post_collection.v4.jl path-to-dump-directory path-to-wapo-near-duplicates`
+
+## Other Notes
+
+1. The updated proto definitions for the topics can be found in `src/main/proto`
