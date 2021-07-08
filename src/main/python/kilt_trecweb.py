@@ -42,6 +42,10 @@ if __name__ == "__main__":
     
     input_file = os.path.basename(kilt_file_path)
 
+    # Create the directory (for dumping files) if it doesn't exists
+    if not os.path.exists(dump_dir):
+        os.mkdir(dump_dir)
+
     print("Starting processing.")
     print("Output directory: " + dump_dir)
     dumper_file = os.path.join(dump_dir, input_file + '.xml')
