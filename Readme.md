@@ -43,7 +43,7 @@ The resulting material commonly finds use as a diamond imitation or simulant. Co
 
 ### Creating the Trecweb scripts:
 
-Ensure you have a copy of the Marco document, KILT, and WaPo collections and any relevant duplicate files (duplicates file for Marco can be found in the `duplicate_files` folder). Then:
+Ensure you have a copy of the Marco document, KILT, and WaPo collections and any relevant duplicate files (duplicates file for Marco and WaPo can be found in [this folder](https://github.com/daltonj/treccastweb/tree/master/2021/duplicate_files)). Then:
 
 To generate the **trecweb file for the Marco document collection**, run:
 
