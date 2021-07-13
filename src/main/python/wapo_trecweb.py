@@ -7,8 +7,8 @@ import sys
 import os
 import codecs
 from tqdm import tqdm
-from src.helpers import convert_to_trecweb, add_passage_ids
-from src.PassageChunker import SpacyPassageChunker
+from trecweb_utils import convert_to_trecweb, add_passage_ids
+from passage_chunker import SpacyPassageChunker
 
 
 def get_document(data, dup_dict):

@@ -9,8 +9,8 @@ import sys
 import os
 import io
 import codecs
-from src.helpers import convert_to_trecweb, add_passage_ids
-from src.PassageChunker import SpacyPassageChunker
+from trecweb_utils import convert_to_trecweb, add_passage_ids
+from passage_chunker import SpacyPassageChunker
 
 def parse_sim_file(filename):
     """Reads the deduplicated documents file and stores the 
