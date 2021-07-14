@@ -1,7 +1,6 @@
 
 # Version 1.0
 # Python 3
-import multiprocessing
 import json
 import sys
 import os
@@ -82,7 +81,7 @@ def create_duplicate_dictionary(duplicate_file):
     return dup_dict
 
 
-def write_document(data, fp, dup_dict):
+def write_document(data, fp, dup_dict, passageChunker):
     """Writes a WaPo document to trecweb
 
     Args:
@@ -95,7 +94,8 @@ def write_document(data, fp, dup_dict):
 
     try:
         idx, body, title, url = get_document(data1, dup_dict)
-        passageChunker = SpacyPassageChunker(body)
+
+        passageChunker.sentence_tokenization(body)
         passages = passageChunker.create_passages()
 
         passage_splits = add_passage_ids(passages)
@@ -135,16 +135,10 @@ if __name__ == '__main__':
     print("Read ", file_path)
     tl = len(lines)
 
+    passageChunker = SpacyPassageChunker()
 
-    processes = []
+
     for i, data in tqdm(enumerate(lines), total=tl):
-        p = multiprocessing.Process(target=write_document, args=(data, fp, dup_dict))
-        processes.append(p)
-        p.start()
-    
-    for process in processes:
-        process.join()
-
-        
+        write_document(data, fp, dup_dict, passageChunker)        
         
     fp.close()
