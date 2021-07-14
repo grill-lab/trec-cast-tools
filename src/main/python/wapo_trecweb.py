@@ -7,8 +7,8 @@ import sys
 import os
 import codecs
 from tqdm import tqdm
-from src.helpers import convert_to_trecweb, add_passage_ids
-from src.PassageChunker import SpacyPassageChunker
+from trecweb_utils import convert_to_trecweb, add_passage_ids
+from passage_chunker import SpacyPassageChunker
 
 
 def get_document(data, dup_dict):
@@ -128,8 +128,7 @@ if __name__ == '__main__':
     if not os.path.exists(dumper):
         os.mkdir(dumper)
     
-    #for file in os.listdir(file_path):
-    dumper_file = os.path.join(dumper, input_file + '.xml')
+    dumper_file = os.path.join(dumper, input_file + '.trecweb')
     fp = codecs.open(dumper_file, 'w', 'utf-8')
     print("Opening ", file_path)
     lines = open(file_path, 'r').readlines()
