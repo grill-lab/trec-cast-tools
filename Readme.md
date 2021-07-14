@@ -60,3 +60,4 @@ To generate the **trecweb file for WaPo**, run:
 ## Other Notes
 
 1. The updated proto definitions for the topics can be found in `src/main/proto`
+2. The trecweb scripts have been tested with Python 3.8.
