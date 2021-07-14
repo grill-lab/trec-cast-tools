@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     print("Starting processing.")
     print("Output directory: " + dump_dir)
-    dumper_file = os.path.join(dump_dir, input_file + '.xml')
+    dumper_file = os.path.join(dump_dir, input_file + '.trecweb')
     print("Writing output to: " + dumper_file)
     fp = codecs.open(dumper_file, 'w', 'utf-8')
 
