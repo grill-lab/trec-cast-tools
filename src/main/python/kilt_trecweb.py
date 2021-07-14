@@ -4,8 +4,8 @@ from tqdm import tqdm
 import os
 import sys
 import codecs
-from src.helpers import convert_to_trecweb, add_passage_ids
-from src.PassageChunker import SpacyPassageChunker
+from trecweb_utils import convert_to_trecweb, add_passage_ids
+from passage_chunker import SpacyPassageChunker
 
 
 def write_document(line, fp):

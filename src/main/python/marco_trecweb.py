@@ -9,8 +9,8 @@ import sys
 import os
 import io
 import codecs
-from src.helpers import convert_to_trecweb, add_passage_ids
-from src.PassageChunker import SpacyPassageChunker
+from trecweb_utils import convert_to_trecweb, add_passage_ids
+from passage_chunker import SpacyPassageChunker
 
 def parse_sim_file(filename):
     """Reads the deduplicated documents file and stores the 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
     print("Starting processing.")
     print("Output directory: " + dump_dir)
-    dumper_file = os.path.join(dump_dir, input_file + '.xml')
+    dumper_file = os.path.join(dump_dir, input_file + '.trecweb')
     print("Writing output to: " + dumper_file)
     fp = codecs.open(dumper_file, 'w', 'utf-8')
 
