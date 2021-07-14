@@ -1,10 +1,4 @@
-# Version 1.0
-# Python 3.6
-# Install tqdm for tracking progress
-
-import multiprocessing
 from tqdm import tqdm
-# import json
 import sys
 import os
 import io
@@ -36,7 +30,7 @@ def parse_sim_file(filename):
     return sim_dict
 
 
-def write_document(line, fp, sim_dict):
+def write_document(line, fp, sim_dict, passageChunker):
     """Writes MARCO doc to trecweb
 
     Args:
@@ -53,9 +47,10 @@ def write_document(line, fp, sim_dict):
         
         
         idx = 'MARCO_' + str(idx)
-        # Create a trecweb entry for a passage
-        passageChunker = SpacyPassageChunker(body)
-        # passageChunker = RegexPassageChunker(body)
+
+        passageChunker.sentence_tokenization(body)
+        
+
         passages = passageChunker.create_passages()
         
         passage_splits = add_passage_ids(passages)
@@ -66,7 +61,6 @@ def write_document(line, fp, sim_dict):
     except:
         #either idx, url, title, or body is missing
         return
-
 
 if __name__ == "__main__":
 
@@ -93,18 +87,11 @@ if __name__ == "__main__":
     print("Writing output to: " + dumper_file)
     fp = codecs.open(dumper_file, 'w', 'utf-8')
 
-    # Read the ranking collections file
-    processes = [] 
+    passageChunker = SpacyPassageChunker()
+
     with io.open(marco_file, "r", encoding="utf-8") as input:
 
         for line in tqdm(input, total=3213835):
-            p = multiprocessing.Process(target=write_document, args=(line, fp, sim_dict))
-            processes.append(p)
-            p.start()
-        
-        for process in processes:
-            process.join()
-            
-    input.close()
+            write_document(line, fp, sim_dict, passageChunker)
+
     fp.close()
-    

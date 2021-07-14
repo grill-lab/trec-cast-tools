@@ -1,4 +1,3 @@
-import multiprocessing
 import json
 from tqdm import tqdm
 import os
@@ -8,7 +7,7 @@ from trecweb_utils import convert_to_trecweb, add_passage_ids
 from passage_chunker import SpacyPassageChunker
 
 
-def write_document(line, fp):
+def write_document(line, fp, passageChunker):
     """Writes a KILT document to Trecweb
 
     Args:
@@ -21,8 +20,8 @@ def write_document(line, fp):
     body = ' '.join(doc['text'])
     url = doc['history']['url']
     
-    passageChunker = SpacyPassageChunker(body)
-    # passageChunker = RegexPassageChunker(body)
+    passageChunker.sentence_tokenization(body)
+
     passages = passageChunker.create_passages()
     
     passage_splits = add_passage_ids(passages)
@@ -42,27 +41,22 @@ if __name__ == "__main__":
     
     input_file = os.path.basename(kilt_file_path)
 
+    passageChunker = SpacyPassageChunker()
+
     # Create the directory (for dumping files) if it doesn't exists
     if not os.path.exists(dump_dir):
         os.mkdir(dump_dir)
 
     print("Starting processing.")
     print("Output directory: " + dump_dir)
-    dumper_file = os.path.join(dump_dir, input_file + '.xml')
+    dumper_file = os.path.join(dump_dir, input_file + 'trecweb')
     print("Writing output to: " + dumper_file)
     fp = codecs.open(dumper_file, 'w', 'utf-8')
 
-
-    processes = []                   
+                 
     with open(kilt_file_path, 'r') as kilt_file:
-        #num_lines = kilt_file.readlines()
         
         for line in tqdm(kilt_file, total=5903530):
-            p = multiprocessing.Process(target=write_document, args=(line, fp))
-            processes.append(p)
-            p.start()
-        
-        for process in processes:
-            process.join()
+            write_document(line, fp, passageChunker)
 
     fp.close()
