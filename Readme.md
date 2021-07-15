@@ -45,15 +45,15 @@ The resulting material commonly finds use as a diamond imitation or simulant. Co
 
 Ensure you have a copy of the Marco document, KILT, and WaPo collections and any relevant duplicate files (duplicates file for Marco and WaPo can be found in [this folder](https://github.com/daltonj/treccastweb/tree/master/2021/duplicate_files)). Then:
 
-To generate the **trecweb file for the Marco document collection**, run:
+To generate the **trecweb file for the Marco document collection**, run (takes about 4 hours):
 
 `python marco_trecweb.py path-to-msmarco-docs.tsv path-to-dump-directory path-to-duplicates-file`
 
-To generate the **trecweb file for KILT**, run:
+To generate the **trecweb file for KILT**, run (takes about 3.5 hours):
 
 `python kilt_trecweb.py path-to-kilt_knowledgesource.json path-to-dump-directory`
 
-To generate the **trecweb file for WaPo**, run:
+To generate the **trecweb file for WaPo**, run (takes about 1 hour):
 
 `python wapo_trecweb.py path-to-TREC_Washington_Post_collection.v4.jl path-to-dump-directory path-to-wapo-near-duplicates`
 
