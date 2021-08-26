@@ -41,3 +41,8 @@ def add_passage_ids(passages):
 
     
     return passage_splits
+
+def write_document_ids(idx, passages, collection_name):
+    with open("./canonical_ids/{}_ids.txt".format(collection_name), "a") as collection_ids:
+        for passage in passages:
+            collection_ids.write("{}-{}\n".format(idx, passage["id"]))
