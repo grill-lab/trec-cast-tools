@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// Package for server and client must be identical! Otherwise connection won't be made and the UNIMPLEMENTED error will be raised.
+package edu.gla.cast.search;
+option java_package = "edu.gla.cast.search";
+
+option java_multiple_files = true;
+
+import "search.proto";
+
+service CastSearch {
+    // Send the response from agents using when InteractionRequest is received.
+    rpc Search (SearchRequest) returns (SearchResults) {
+    }
+
+    // Provide the streaming search
+    rpc StreamSearches(SearchRequest) returns (stream SearchResults) {
+    }
+}
