@@ -1,4 +1,4 @@
-# CAsT2021Tools
+# 2021 Passage Run to Document Run Converter
 
 This is a simple python utility to convert passage runs from TREC CAsT 2021 to document runs.
 
