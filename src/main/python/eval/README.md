@@ -4,6 +4,6 @@ This is a simple python utility to convert passage runs from TREC CAsT 2021 to d
 
 To use:
 
-- `git clone` the repository and `cd` into it.
-- create and activate a virtual environment with `python2 -m venv env` then `source env/bin/activate`
+- `git clone` the repository and `cd` into the eval folder.
+- create and activate a virtual environment with `python3 -m venv env` then `source env/bin/activate`
 - run the script with `python3 main.py --run_file_path [INSERT PATH TO PASSAGE RUN FILE HERE]`
