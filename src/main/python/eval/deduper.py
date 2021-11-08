@@ -16,7 +16,9 @@ def deduplicate_run(run_file: str) -> List:
 
             line_content = line.split()
 
-            line_content[2] = line_content[2].split("-")[0]
+            split = line_content[2].split("-")
+
+            line_content[2] = '-'.join(split[:-1])
 
             # check if turn_id is in the dictionary
             if document_ids.get(line_content[0]):
