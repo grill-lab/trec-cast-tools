@@ -62,6 +62,8 @@ The resulting material commonly finds use as a diamond imitation or simulant. Co
 
 5. The `download_collection.sh` script asks for a password to download the Washington Post corpus. This is the same password NIST provides to download the collection after filing the "Organizational agreement" with NIST. For more information, visit https://trec.nist.gov/data/wapost/
 
+6. If you want to write out the output trecweb/jsonlines file to a different directory than the default, then pass in the `--output-dir` argument when running the utility.
+
 <!-- 5. This utility also generates a file with all passage ids and their corresponding passage md5 hashes. You may compare this file with the master version to ensure that you have the right passage splits. -->
 
 
