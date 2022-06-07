@@ -5,7 +5,7 @@ from typing import Dict, List
 class AbstractPassageChunker(ABC):
 
     @abstractmethod
-    def process_batch(self, document_batch) -> List[Dict]:
+    def process_batch(self, document_batch, output_dir) -> List[Dict]:
         """
         Generates passages splits for each document in a batch
 

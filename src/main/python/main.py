@@ -62,7 +62,7 @@ if __name__ == '__main__':
         ).generate_documents()
 
         for batch_num, document_batch in enumerate(kilt_generator):
-            updated_document_batch = passage_chunker.process_batch(document_batch)
+            updated_document_batch = passage_chunker.process_batch(document_batch, f"{args.output_dir}/md5_hashes")
             if args.output_type == 'jsonlines':
                 write_to_jsonlines(f"{output_path}/kilt_{batch_num}.jsonl", document_batch)
             elif args.output_type == 'trecweb':
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         ).generate_documents()
 
         for batch_num, document_batch in enumerate(marco_generator):
-            updated_document_batch = passage_chunker.process_batch(document_batch)
+            updated_document_batch = passage_chunker.process_batch(document_batch, f"{args.output_dir}/md5_hashes")
             if args.output_type == 'jsonlines':
                 write_to_jsonlines(f"{output_path}/marco_{batch_num}.jsonl", document_batch)
             elif args.output_type == 'trecweb':
@@ -87,14 +87,14 @@ if __name__ == '__main__':
                 raise ValueError("--output type must be 'jsonlines' or 'trecweb'")
     
     if not args.skip_process_wapo:
-        print("Processing WaPO")
+        print("Processing WaPo")
 
         wapo_generator: WaPoGenerator = WaPoGenerator(
             args.wapo_collection, args.duplicates_file, args.batch_size
         ).generate_documents()
 
         for batch_num, document_batch in enumerate(wapo_generator):
-            updated_document_batch = passage_chunker.process_batch(document_batch)
+            updated_document_batch = passage_chunker.process_batch(document_batch, f"{args.output_dir}/md5_hashes")
             if args.output_type == 'jsonlines':
                 write_to_jsonlines(f"{output_path}/wapo_{batch_num}.jsonl", document_batch)
             elif args.output_type == 'trecweb':
