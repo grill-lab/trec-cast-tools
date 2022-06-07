@@ -1,10 +1,10 @@
-# Tools and scripts for TREC CAsT Y3
+# TREC CAsT Y4 Tools
 
-Code to create trecweb files from the MARCO, KILT, and WaPo collections can be found in the `src/main/python` directory. During the trecweb creation process, each document in a collection is chunked into smaller passages. 
+Utility tools to create trecweb and jsonlines files from the MARCO, KILT, and WaPo collections can be found in the `src/main/python` directory. During the file creation process, each document in a collection is chunked into smaller passages. 
 
-Each document has an ID, url, title, and body. You can refer to http://www.treccast.ai/ to learn more about the Document ID format used for CAsT. Passage ID is based on the position (zero-indexed) of a passage within a document. 
+Each document has an ID, url, title, and body. You can refer to http://www.treccast.ai/ to learn more about the Document ID format used for CAsT. Passage ID is based on the position of a passage within a document. 
 
-Below is an example of the trecweb format that will be generated for MARCO after running the `marco_trecweb.py` code:
+Below is an example of a document in trecweb format that will be generated for MARCO_v2 after running the utility:
 
 ```
 <DOC>
@@ -15,10 +15,10 @@ Below is an example of the trecweb format that will be generated for MARCO after
 <TITLE>What is a Crystal?</TITLE>
 <URL>https://www.gemsociety.org/article/crystal/</URL>
 <BODY>
-<passage id=0>
+<passage id=1>
 What is a Crystal?by International Gem Society“Crystal 1” by Brenda Clarke. Licensed under CC By 2.0. What comes to mind when you think of crystals? Many people might visualize beautiful, mineral objects with smooth faces in regular geometric patterns. Others might imagine elegant glassware. For gemologists, the scientific definition of a crystal goes right to the atomic level. A crystal is a solid whose atoms are arranged in a “highly ordered” repeating pattern. These patterns are called crystal systems. If a mineral has its atoms arranged in one of them, then that mineral is a crystal. Crystal Systems There are seven crystal systems: isometric, tetragonal, orthorhombic, monoclinic, triclinic, hexagonal, and trigonal. Each is distinguished by the geometric parameters of its unit cell, the arrangement of atoms repeated throughout the solid to form the crystal object we can see and feel. For example, an isometric or cubic crystal has a cube as its unit cell. 
 </passage>
-<passage id=1>
+<passage id=2>
 All its sides are equal in length and all its angles are right angles. Well-known gems in this system include diamonds, garnets, and spinels. The isometric crystal system has three axes of the same length that intersect at 90º angles. On the other hand, a triclinic crystal has all sides of different lengths and none of its angles are right angles. These geometric variations mean triclinic crystals can take on many intricate shapes. Well-known gems in the triclinic system include labradorite and turquoise. None of the axes in the triclinic system intersect at 90º and all are different lengths. Non-Crystalline Solids Some objects may appear to be crystals to the naked eye, but outward appearances can be misleading. For gemologists, the atomic structure of the object is the determining factor. Not all objects with regular geometric faces are crystals, not are all solid materials crystals. Amorphous Solids Glass, for example, has a non-crystalline, amorphous atomic structure. 
 </passage>
 <passage id=2>
@@ -38,26 +38,30 @@ The resulting material commonly finds use as a diamond imitation or simulant. Co
 ## How to use
 
 1. `cd` into `src/main/python`
-1. Create and Activate a Python Virtual Environment using `python3 -m venv env` then `source env/bin/activate`
+1. Create and activate a Python Virtual Environment using `python3 -m venv env` then `source env/bin/activate`
 2. Install the dependencies using `pip install -r requirements.txt`
 
-### Creating the Trecweb scripts:
+### Processing the Collection:
 
-Ensure you have a copy of the Marco document, KILT, and WaPo collections and any relevant duplicate files (duplicates file for Marco and WaPo can be found in [this folder](https://github.com/daltonj/treccastweb/tree/master/2021/duplicate_files)). Then:
+1. First, use the `download_collection.sh` bash script to download the raw collection and blacklisted document ids
+2. Next, run `python3 main.py --output_type trecweb` or `python3 main.py --output_type jsonlines` to generate .trecweb or .jsonl files you can use for indexing
 
-To generate the **trecweb file for the Marco document collection**, run (takes about 4 hours):
+### Notes
 
-`python marco_trecweb.py path-to-msmarco-docs.tsv path-to-dump-directory path-to-duplicates-file`
+1. If you downloaded the raw collection without the `download_collection.sh` script, you may need to pass in the path to your files as argument while using the scripts:
+- use `--wapo_collection` to specify the path to your downloaded WaPo collection
+- use `--duplicates_file` to specify the path to your downloaded duplicates file
+- use `--marco_v2_collection` to specify the path to your downloaded MARCO V2 collection
+- use `--kilt_collection` to specify the path to your downloaded KILT collection
 
-To generate the **trecweb file for KILT**, run (takes about 3.5 hours):
+2. You can specify a directory to write the output trecweb/jsonlines file to by using `--output_dir`
 
-`python kilt_trecweb.py path-to-kilt_knowledgesource.json path-to-dump-directory`
+3. If you want to process a subset of the three collections, you can skip processing the other collections you're not interested. For example, if you just wanted to generate trecweb files for MARCO V2, then you would do `python3 main.py --output_type trecweb --skip_process_kilt --skip_process_wapo`
 
-To generate the **trecweb file for WaPo**, run (takes about 1 hour):
+4. Documents are processed in batches to take advange of Spacy's multiprocessing capabilities. You may want to reduce or increase the `--batch_size` argument (default of 100000) depending on the compute resources available to you. Please note that the `--batch_size` argument also determines the number of document entries that are written out per output file.
 
-`python wapo_trecweb.py path-to-TREC_Washington_Post_collection.v4.jl path-to-dump-directory path-to-wapo-near-duplicates`
+5. This utility also generates a file with all passage ids and their corresponding passage md5 hashes. You may compare this file with the master version to ensure that you have the right passage splits.
+
 
 ## Other Notes
-
-1. The updated proto definitions for the topics can be found in `src/main/proto`
-2. The trecweb scripts have been tested with Python 3.8.
+1. The utility was built and tested with Python 3.8.10
