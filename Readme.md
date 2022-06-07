@@ -60,6 +60,8 @@ The resulting material commonly finds use as a diamond imitation or simulant. Co
 
 4. Documents are processed in batches to take advange of Spacy's multiprocessing capabilities. You may want to reduce or increase the `--batch_size` argument (default of 100000) depending on the compute resources available to you. Please note that the `--batch_size` argument also determines the number of document entries that are written out per output file.
 
+5. The `download_collection.sh` script asks for a password to download the Washington Post corpus. This is the same password NIST provides to download the collection after filing the "Organizational agreement" with NIST. For more information, visit https://trec.nist.gov/data/wapost/
+
 <!-- 5. This utility also generates a file with all passage ids and their corresponding passage md5 hashes. You may compare this file with the master version to ensure that you have the right passage splits. -->
 
 
