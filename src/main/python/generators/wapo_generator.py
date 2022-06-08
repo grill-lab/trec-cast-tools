@@ -33,7 +33,7 @@ class WaPoGenerator(AbstractGenerator):
                     continue
                 else:
                     # address url issues
-                    if "washingtonpost" not in raw_document["article_url"]:
+                    if raw_document.get("article_url") and "washingtonpost" not in raw_document["article_url"]:
                         raw_document["article_url"] = "https://www.washingtonpost.com" + \
                             raw_document['article_url']
 
@@ -49,7 +49,7 @@ class WaPoGenerator(AbstractGenerator):
                                 if item.get('subtype') == 'paragraph':
                                     document_body += ' ' + item['content']
                     except:
-                        continue # content to extract
+                        continue # no content to extract
                     document_body = self.__cleanhtml(document_body)
 
                     parsed_document = {
