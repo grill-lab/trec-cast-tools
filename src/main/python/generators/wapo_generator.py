@@ -54,8 +54,8 @@ class WaPoGenerator(AbstractGenerator):
 
                     parsed_document = {
                         "id": doc_id,
-                        "url": raw_document['article_url'],
-                        "title": raw_document['title'],
+                        "url": str(raw_document['article_url'] or ''),
+                        "title": str(raw_document['title'] or ''), # account for empty titles
                         "contents": document_body.replace("\n", " ").strip()
                     }
                     document_batch.append(parsed_document)
