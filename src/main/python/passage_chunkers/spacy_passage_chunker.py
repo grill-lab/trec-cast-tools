@@ -8,7 +8,7 @@ from typing import Dict, List
 nlp = spacy.load("en_core_web_sm", exclude=[
                  "parser", "tagger", "ner", "attribute_ruler", "lemmatizer", "tok2vec"])
 nlp.enable_pipe("senter")
-nlp.max_length = 1500000  # for documents that are longer than the spacy character limit
+nlp.max_length = 2000000  # for documents that are longer than the spacy character limit
 
 
 class SpacyPassageChunker(AbstractPassageChunker):
