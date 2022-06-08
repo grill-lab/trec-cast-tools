@@ -4,35 +4,60 @@ Utility tools to create trecweb and jsonlines files from the MARCO, KILT, and Wa
 
 Each document has an ID, url, title, and body. You can refer to http://www.treccast.ai/ to learn more about the Document ID format used for CAsT. Passage ID is based on the position of a passage within a document. 
 
-Below is an sample document in trecweb format that is generated for MARCO_v2 after running the utility:
+Below is an sample document in `trecweb` format that is generated from KILT after running the utility:
 
 ```
 <DOC>
-<DOCNO>MARCO_0_3178380</DOCNO>
+<DOCNO>KILT_20988744</DOCNO>
 <DOCHDR>
 </DOCHDR>
 <HTML>
-<TITLE>What is a Crystal?</TITLE>
-<URL>https://www.gemsociety.org/article/crystal/</URL>
+<TITLE>Worlingworth</TITLE>
+<URL>https://en.wikipedia.org/w/index.php?title=Worlingworth&oldid=895384908</URL>
 <BODY>
-<passage id=1>
-What is a Crystal?by International Gem Society“Crystal 1” by Brenda Clarke. Licensed under CC By 2.0. What comes to mind when you think of crystals? Many people might visualize beautiful, mineral objects with smooth faces in regular geometric patterns. Others might imagine elegant glassware. For gemologists, the scientific definition of a crystal goes right to the atomic level. A crystal is a solid whose atoms are arranged in a “highly ordered” repeating pattern. These patterns are called crystal systems. If a mineral has its atoms arranged in one of them, then that mineral is a crystal. Crystal Systems There are seven crystal systems: isometric, tetragonal, orthorhombic, monoclinic, triclinic, hexagonal, and trigonal. Each is distinguished by the geometric parameters of its unit cell, the arrangement of atoms repeated throughout the solid to form the crystal object we can see and feel. For example, an isometric or cubic crystal has a cube as its unit cell. 
-</passage>
-<passage id=2>
-All its sides are equal in length and all its angles are right angles. Well-known gems in this system include diamonds, garnets, and spinels. The isometric crystal system has three axes of the same length that intersect at 90º angles. On the other hand, a triclinic crystal has all sides of different lengths and none of its angles are right angles. These geometric variations mean triclinic crystals can take on many intricate shapes. Well-known gems in the triclinic system include labradorite and turquoise. None of the axes in the triclinic system intersect at 90º and all are different lengths. Non-Crystalline Solids Some objects may appear to be crystals to the naked eye, but outward appearances can be misleading. For gemologists, the atomic structure of the object is the determining factor. Not all objects with regular geometric faces are crystals, not are all solid materials crystals. Amorphous Solids Glass, for example, has a non-crystalline, amorphous atomic structure. 
-</passage>
-<passage id=3>
-Although glassmakers can pour and harden glass into geometric shapes, its atomic structure remains unchanged. People commonly refer to some glassware, such as this, as crystal. However, scientifically speaking, these objects aren’t crystals. Photo by liz west. Licensed under CC By 2.0. Polycrystalline Solids Water that hardens into a single large snowflake is, in fact, a crystal. It crystallizes as it cools, freezes, and moves through the atmosphere. “Snowflake-23” by Yellowcloud. Licensed under CC By 2.0. However, water that hardens into a cube in your freezer’s ice tray isn’t a crystal. Ice cubes, rocks, and common metals are examples of polycrystalline materials. They may contain many crystalline objects. (In the case of ice cubes, they may contain actual ice crystals). Nevertheless, you can’t describe the entire ice cube as having a uniform crystalline structure. 
-</passage>
-<passage id=4>
-“Frozen Ice Cubes IMG_1021” by Steven Depolo. Licensed under CC By 2.0. Cryptocrystalline or microcrystalline rocks consist of microscopic crystals, but, again, those rocks lack a uniform crystalline structure. Some cryptocrystalline materials, such as chalcedony, find use as gem materials in jewelry or decorative objects. The Origins of Crystals Most crystals have natural origins. They can form through inorganic means, such as geological processes within the earth. Others form through organic processes within living creatures. For example, some human kidney stones consist in part of weddellite crystals. Weddellite occurs at the bottom of the Weddell Sea near Antarctica. It can also be found passing very painfully through urinary tracts. “Surface of a Kidney Stone” by Kempf EK. Licensed under CC By-SA 3.0. Laboratories can also create crystals artificially. For example, cubic zirconia, a synthetic gem material, forms with a cubic crystal structure when zirconium and zirconium dioxide are superheated. 
-</passage>
-<passage id=5>
-The resulting material commonly finds use as a diamond imitation or simulant. Colorless cubic zirconia gems often serve as diamond imitations. However, labs can also synthesize this material in many colors. “Multicolor Cubic Zirconia” by Michelle Jo. Licensed under CC By 3.0.
-</passage>
+<PASSAGE id=1>
+Worlingworth  Worlingworth is a village and civil parish in the Mid Suffolk district of Suffolk in eastern England, located around ten miles south-east of Diss. In 2011 it had a total population of 802 people.  The village has a primary school called Worlingworth CEVC Primary School. The school was judged by Ofsted to be 'Outstanding' in all areas in March 2016. The school's motto is "Cherish All, Achieve Together". The local church of St. Mary is a grade I listed building and the chancel, the oldest surviving part, dates to the late 13th century.   Between 1908 and 1952 the village was served by Worlingworth railway station on the Mid-Suffolk Light Railway.  Section::::History.  In Old English, the meaning of Worlingworth is an 'enclosure of the followers of Wilhere'. Broken down, 'Wilhere' is a personal name, '-ingas' means 'the people of' or 'the people called after' and 'worð' is for 'an enclosure'.  The Domesday book states Worlingworth to be "quite large", with a population of 32 households, made up from 16 villagers, 14 smallholders, 1 slave and 1 freeman. 
+</PASSAGE>
+<PASSAGE id=2>
+The livestock of Worlingworth in 1066 included 8 cattle, 24 pigs, 25 sheep, 35 goats and 2 horses, this remained the same by 1086 however the village had gained 6 beehives and lost the 2 horses.  John Marius Wilson wrote about Worlingworth in 1870 and described it as:  In 1801 the village had the facilities of a blacksmith, a wheelwright, a shoemaker, a dressmaker, a brewers and malsters, a general tradesman, a general store, a beerhouse and coaching inn, a workhouse, a school, a church and a stately hall.  The workhouse was founded in 1730, after the village guild hall was converted. It was able to accommodate 35 people up until it was closed in 1836, shortly after outbreaks of typhus in 1820.  By 2014 the village amenities have changed considerably compared to those available in 1801. There is now a church, a community centre, and a primary school. The village had a public house called The Swan Inn, which closed in 2016. The building is still standing as it is a grade II listed building.  Section::::Demographics.  Section::::Demographics.:Population.   The earliest records for population in Worlingworth date back to the 1801 census where there was a total population of 729. 
+</PASSAGE>
+<PASSAGE id=3>
+There has been a steady decline in Worlingworth's total population from 1851 where the population total was 811 to 460 in 1961, possibly due to the migration of people and families to towns or cities to find work in factories rather than as farm labourers.By 2011 the population had increased to 802, and was made up of 390 females and 412 males.  In 1831 the majority of Worlingworth's population, 78 people, were classed as Labourers and Servants, the lowest social class, compared to just 27 people who were in the highest being Employers and Professionals. 43 people were of the Middling Sorts which includes masters, skilled workers and small farmers who do not employ labourers and just 21 classified as Other. This suggests that Worlingworth was a small rural community which was strongly based around agriculture.    Section::::Demographics.:Employment.  The enumeration of 1831 shows Worlingworth to have a total population of 729, split between 145 families. 86 people were "chiefly employed in agriculture", the biggest employer as only 30 people were working in trade, manufacturing and handicraft and just 29 in other classes.  In the 1881 census, 324 people were counted in the occupation section in Worlingworth. 
+</PASSAGE>
+<PASSAGE id=4>
+The main occupation for the villagers at this time was in agriculture which employed 103 males, 81 of these worked as an agricultural labourer, farm servant or cottager.30 females were employed as domestic indoor servants,  although the majority of females, 75, were without specified occupations, the second biggest employment sector within Worlingworth in 1881.  The 2001 census shows that there are 487 economically active people, ages 16 to 74, in Worlingworth. The majority, 181 of these were in full-time employment, compared to only 67 who were in part-time employment.  In 2011, the occupations of the villagers was almost equally mixed between employment sectors. The biggest employing sector was Wholesale and Retail Trade which employed 52 people. The second largest sector was Agriculture, Forestry and Fishing which employed 47 people, this includes L.E Tuckwell Ltd. who is an agricultural supplier and a major employer within Worlingworth. 
+</PASSAGE>
 </BODY>
 </HTML>
 </DOC>
+```
+
+and here is a `jsonlines` sample
+
+```
+{
+   "id":"KILT_20988744",
+   "url":"https://en.wikipedia.org/w/index.php?title=Worlingworth&oldid=895384908",
+   "title":"Worlingworth",
+   "contents":[
+      {
+         "body":"Worlingworth  Worlingworth is a village and civil parish in the Mid Suffolk district of Suffolk in eastern England, located around ten miles south-east of Diss. In 2011 it had a total population of 802 people.  The village has a primary school called Worlingworth CEVC Primary School. The school was judged by Ofsted to be 'Outstanding' in all areas in March 2016. The school's motto is \"Cherish All, Achieve Together\". The local church of St. Mary is a grade I listed building and the chancel, the oldest surviving part, dates to the late 13th century.   Between 1908 and 1952 the village was served by Worlingworth railway station on the Mid-Suffolk Light Railway.  Section::::History.  In Old English, the meaning of Worlingworth is an 'enclosure of the followers of Wilhere'. Broken down, 'Wilhere' is a personal name, '-ingas' means 'the people of' or 'the people called after' and 'worð' is for 'an enclosure'.  The Domesday book states Worlingworth to be \"quite large\", with a population of 32 households, made up from 16 villagers, 14 smallholders, 1 slave and 1 freeman. ",
+         "id":1
+      },
+      {
+         "body":"The livestock of Worlingworth in 1066 included 8 cattle, 24 pigs, 25 sheep, 35 goats and 2 horses, this remained the same by 1086 however the village had gained 6 beehives and lost the 2 horses.  John Marius Wilson wrote about Worlingworth in 1870 and described it as:  In 1801 the village had the facilities of a blacksmith, a wheelwright, a shoemaker, a dressmaker, a brewers and malsters, a general tradesman, a general store, a beerhouse and coaching inn, a workhouse, a school, a church and a stately hall.  The workhouse was founded in 1730, after the village guild hall was converted. It was able to accommodate 35 people up until it was closed in 1836, shortly after outbreaks of typhus in 1820.  By 2014 the village amenities have changed considerably compared to those available in 1801. There is now a church, a community centre, and a primary school. The village had a public house called The Swan Inn, which closed in 2016. The building is still standing as it is a grade II listed building.  Section::::Demographics.  Section::::Demographics.:Population.   The earliest records for population in Worlingworth date back to the 1801 census where there was a total population of 729. ",
+         "id":2
+      },
+      {
+         "body":"There has been a steady decline in Worlingworth's total population from 1851 where the population total was 811 to 460 in 1961, possibly due to the migration of people and families to towns or cities to find work in factories rather than as farm labourers.By 2011 the population had increased to 802, and was made up of 390 females and 412 males.  In 1831 the majority of Worlingworth's population, 78 people, were classed as Labourers and Servants, the lowest social class, compared to just 27 people who were in the highest being Employers and Professionals. 43 people were of the Middling Sorts which includes masters, skilled workers and small farmers who do not employ labourers and just 21 classified as Other. This suggests that Worlingworth was a small rural community which was strongly based around agriculture.    Section::::Demographics.:Employment.  The enumeration of 1831 shows Worlingworth to have a total population of 729, split between 145 families. 86 people were \"chiefly employed in agriculture\", the biggest employer as only 30 people were working in trade, manufacturing and handicraft and just 29 in other classes.  In the 1881 census, 324 people were counted in the occupation section in Worlingworth. ",
+         "id":3
+      },
+      {
+         "body":"The main occupation for the villagers at this time was in agriculture which employed 103 males, 81 of these worked as an agricultural labourer, farm servant or cottager.30 females were employed as domestic indoor servants,  although the majority of females, 75, were without specified occupations, the second biggest employment sector within Worlingworth in 1881.  The 2001 census shows that there are 487 economically active people, ages 16 to 74, in Worlingworth. The majority, 181 of these were in full-time employment, compared to only 67 who were in part-time employment.  In 2011, the occupations of the villagers was almost equally mixed between employment sectors. The biggest employing sector was Wholesale and Retail Trade which employed 52 people. The second largest sector was Agriculture, Forestry and Fishing which employed 47 people, this includes L.E Tuckwell Ltd. who is an agricultural supplier and a major employer within Worlingworth. ",
+         "id":4
+      }
+   ]
+}
 ```
 
 ## How to use
