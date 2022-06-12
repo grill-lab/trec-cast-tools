@@ -43,22 +43,21 @@ class WaPoGenerator(AbstractGenerator):
                     
                     # extract body
                     document_body = ''
-                    try:
-                        if raw_document.get('contents') and len(raw_document['contents']) > 0:
-                            for item in raw_document['contents']:
-                                if item.get('subtype') == 'paragraph':
-                                    document_body += ' ' + item['content']
-                    except:
-                        continue # no content to extract
+                    if raw_document.get('contents') and len(raw_document['contents']) > 0:
+                        for item in raw_document['contents']:
+                            if item and item.get('subtype') == 'paragraph':
+                                document_body += ' ' + item['content']
                     document_body = self.__cleanhtml(document_body)
+                    document_body = document_body.replace("\n", " ").strip()
 
-                    parsed_document = {
-                        "id": doc_id,
-                        "url": str(raw_document['article_url'] or ''),
-                        "title": str(raw_document['title'] or ''), # account for empty titles
-                        "contents": document_body.replace("\n", " ").strip()
-                    }
-                    document_batch.append(parsed_document)
+                    if document_body:
+                        parsed_document = {
+                            "id": doc_id,
+                            "url": str(raw_document['article_url'] or ''),
+                            "title": str(raw_document['title'] or ''), # account for empty titles
+                            "contents": document_body
+                        }
+                        document_batch.append(parsed_document)
 
                 if len(document_batch) == self.batch_size:
                     yield document_batch
