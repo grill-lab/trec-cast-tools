@@ -24,6 +24,9 @@ class MARCOGenerator(AbstractGenerator):
                         for line in member_zip:
                             raw_document = json.loads(line)
                             doc_id = 'MARCO_' + raw_document['docid']
+                            # remove 'msmarco_doc' if present
+                            if "msmarco_doc_" in doc_id:
+                                doc_id = doc_id.replace("msmarco_doc_", "")
                             if doc_id in self.blacklist_ids:
                                 continue
                             else:
