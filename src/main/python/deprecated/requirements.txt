@@ -14,7 +14,7 @@ immutables==0.15
 Jinja2==3.0.1
 MarkupSafe==2.0.1
 murmurhash==1.0.5
-numpy==1.19.5
+numpy==1.22.0
 pandas
 packaging==20.9
 pathy==0.5.2
