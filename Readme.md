@@ -89,7 +89,7 @@ and here is a `jsonlines` sample
 
 6. If you want to write out the output trecweb/jsonlines file to a different directory than the default, then pass in the `--output-dir` argument when running the utility.
 
-7. This utility also generates csv files with all passage ids and their corresponding passage md5 hashes. You may compare the hashes in this file with the hashes in the [master version](https://github.com/daltonj/treccastweb/tree/master/2022) to ensure that you have the right passage splits.
+7. This utility also generates csv files with all passage ids and their corresponding passage md5 hashes. You may compare the hashes in this file with the hashes in the [master version](https://cast-y4-collection.s3.amazonaws.com/all_hashes.csv) to ensure that you have the right passage splits.
 
 
 ## Other Notes
