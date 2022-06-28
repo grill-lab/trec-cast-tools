@@ -2,7 +2,7 @@ import argparse
 from hashlib import md5
 from pathlib import Path
 
-from generators import WaPoGenerator, KILTGenerator, MARCO_v2_Generator #, MARCO_v1_Generator
+from generators import WaPoGenerator, KILTGenerator, MARCO_v2_Generator
 from passage_chunkers import PassageChunker
 from utils import process_batch
 
@@ -25,14 +25,6 @@ parser.add_argument(
     default="files/raw_collection/msmarco_v2_doc.tar",
     help="Path to compressed MARCO V2 collection"
 )
-
-# MARCO v1 collection path
-# parser.add_argument(
-#     '--marco_v1_collection',
-#     type=str,
-#     default="files/raw_collection/msmarco-docs.tsv.gz",
-#     help="Path to compressed MARCO V1 collection"
-# )
 
 # WaPo collection path
 parser.add_argument(
@@ -102,22 +94,6 @@ if __name__ == '__main__':
             output_path=output_path,
             md5_dir_path=md5_dir_path
         )
-    
-    # if not args.skip_process_marco_v1:
-    #     print("Processing MARCO v1")
-
-    #     marco_v1_generator: MARCO_v1_Generator = MARCO_v1_Generator(
-    #         args.marco_v1_collection, args.duplicates_file, args.batch_size
-    #     ).generate_documents()
-
-    #     process_batch(
-    #         collection_name='MARCO_v1',
-    #         generator=marco_v1_generator,
-    #         passage_chunker=passage_chunker,
-    #         output_type=args.output_type,
-    #         output_path=output_path,
-    #         md5_dir_path=md5_dir_path
-    #     )
 
     if not args.skip_process_wapo:
         print("Processing WaPo")
