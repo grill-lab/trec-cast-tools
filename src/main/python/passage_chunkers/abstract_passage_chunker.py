@@ -62,7 +62,7 @@ class AbstractPassageChunker(ABC):
                 sub_id += 1
 
             else:
-                current_passage += sentence.text + ' '
+                current_passage += ' ' + sentence.text + ' '
                 current_passage_word_count += word_count
 
         if current_passage:
