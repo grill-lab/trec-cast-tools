@@ -5,7 +5,7 @@ from .writers import write_md5_hashes, write_to_jsonlines, write_to_trecweb
 
 def process_batch(collection_name, generator, passage_chunker, output_type, output_path, md5_dir_path):
     with multiprocessing.Pool() as pool:
-        for batch_id, document_batch in enumerate(pool.imap_unordered(passage_chunker.process_batch, islice(generator, 1))):
+        for batch_id, document_batch in enumerate(pool.imap_unordered(passage_chunker.process_batch, generator)):
 
             print(
                 f"--- Passages generated for {collection_name} documents in batch number {batch_id} ---")
