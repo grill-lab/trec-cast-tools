@@ -1,11 +1,10 @@
 import argparse
 from hashlib import md5
 from pathlib import Path
-import multiprocessing
 
-from generators import WaPoGenerator, KILTGenerator, MARCOGenerator
+from generators import WaPoGenerator, KILTGenerator, MARCO_v2_Generator
 from passage_chunkers import PassageChunker
-from utils import write_to_jsonlines, write_to_trecweb, write_md5_hashes
+from utils import process_batch
 
 parser = argparse.ArgumentParser(
     description='Collection Processing Parameters')
@@ -19,7 +18,7 @@ parser.add_argument(
     help="Path to the raw KILT collection"
 )
 
-# MARCO collection path
+# MARCO v2 collection path
 parser.add_argument(
     '--marco_v2_collection',
     type=str,
@@ -46,7 +45,8 @@ parser.add_argument(
 parser.add_argument('--batch_size', type=int, default=100000,
                     help="Number of documents per batch")
 parser.add_argument('--skip_process_kilt', default=False, action='store_true')
-parser.add_argument('--skip_process_marco', default=False, action='store_true')
+parser.add_argument('--skip_process_marco_v2', default=False, action='store_true')
+# parser.add_argument('--skip_process_marco_v1', default=False, action='store_true')
 parser.add_argument('--skip_process_wapo', default=False, action='store_true')
 parser.add_argument('--output_dir', type=str, default="files",
                     help="Directory to write files to")
@@ -70,50 +70,30 @@ if __name__ == '__main__':
             args.kilt_collection, args.duplicates_file, args.batch_size
         ).generate_documents()
 
-        with multiprocessing.Pool() as pool:
-            for batch_id, document_batch in enumerate(pool.imap_unordered(passage_chunker.process_batch, kilt_generator)):
+        process_batch(
+            collection_name='KILT',
+            generator=kilt_generator,
+            passage_chunker=passage_chunker,
+            output_type=args.output_type,
+            output_path=output_path,
+            md5_dir_path=md5_dir_path
+        )
 
-                print(
-                    f"--- Passages generated for KILT documents in batch number {batch_id} ---")
-                write_md5_hashes(
-                    f"{md5_dir_path}/KILT_md5hashes_{batch_id}.csv", document_batch)
-                if args.output_type == 'jsonlines':
-                    write_to_jsonlines(
-                        f"{output_path}/KILT_{batch_id}.jsonl", document_batch)
-                elif args.output_type == 'trecweb':
-                    write_to_trecweb(
-                        f"{output_path}/KILT_{batch_id}.trecweb", document_batch)
-                else:
-                    raise ValueError(
-                        "--output type must be 'jsonlines' or 'trecweb'")
-                print(
-                    f"--- Done processing KILT documents in batch number {batch_id} ---")
+    if not args.skip_process_marco_v2:
+        print("Processing MARCO v2")
 
-    if not args.skip_process_marco:
-        print("Processing MARCO")
-
-        marco_generator: MARCOGenerator = MARCOGenerator(
+        marco_v2_generator: MARCO_v2_Generator = MARCO_v2_Generator(
             args.marco_v2_collection, args.duplicates_file, args.batch_size
         ).generate_documents()
 
-        with multiprocessing.Pool() as pool:
-            for batch_id, document_batch in enumerate(pool.imap_unordered(passage_chunker.process_batch, marco_generator)):
-
-                print(
-                    f"--- Passages generated for MARCO documents in batch number {batch_id} ---")
-                write_md5_hashes(
-                    f"{md5_dir_path}/MARCO_md5hashes_{batch_id}.csv", document_batch)
-                if args.output_type == 'jsonlines':
-                    write_to_jsonlines(
-                        f"{output_path}/MARCO_{batch_id}.jsonl", document_batch)
-                elif args.output_type == 'trecweb':
-                    write_to_trecweb(
-                        f"{output_path}/MARCO_{batch_id}.trecweb", document_batch)
-                else:
-                    raise ValueError(
-                        "--output type must be 'jsonlines' or 'trecweb'")
-                print(
-                    f"--- Done processing MARCO documents in batch number {batch_id} ---")
+        process_batch(
+            collection_name='MARCO_v2',
+            generator=marco_v2_generator,
+            passage_chunker=passage_chunker,
+            output_type=args.output_type,
+            output_path=output_path,
+            md5_dir_path=md5_dir_path
+        )
 
     if not args.skip_process_wapo:
         print("Processing WaPo")
@@ -122,21 +102,12 @@ if __name__ == '__main__':
             args.wapo_collection, args.duplicates_file, args.batch_size
         ).generate_documents()
 
-        with multiprocessing.Pool() as pool:
-            for batch_id, document_batch in enumerate(pool.imap_unordered(passage_chunker.process_batch, wapo_generator)):
+        process_batch(
+            collection_name='WaPo',
+            generator=wapo_generator,
+            passage_chunker=passage_chunker,
+            output_type=args.output_type,
+            output_path=output_path,
+            md5_dir_path=md5_dir_path
+        )
 
-                print(
-                    f"--- Passages generated for WaPo documents in batch number {batch_id} ---")
-                write_md5_hashes(
-                    f"{md5_dir_path}/WaPo_md5hashes_{batch_id}.csv", document_batch)
-                if args.output_type == 'jsonlines':
-                    write_to_jsonlines(
-                        f"{output_path}/WaPo_{batch_id}.jsonl", document_batch)
-                elif args.output_type == 'trecweb':
-                    write_to_trecweb(
-                        f"{output_path}/WaPo_{batch_id}.trecweb", document_batch)
-                else:
-                    raise ValueError(
-                        "--output type must be 'jsonlines' or 'trecweb'")
-                print(
-                    f"--- Done processing WaPo documents in batch number {batch_id} ---")

@@ -7,7 +7,7 @@ from .abstract_generator import AbstractGenerator
 from typing import Dict, List
 
 
-class MARCOGenerator(AbstractGenerator):
+class MARCO_v2_Generator(AbstractGenerator):
 
     def generate_documents(self) -> List[Dict]:
 
