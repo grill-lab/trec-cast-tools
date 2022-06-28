@@ -46,7 +46,6 @@ parser.add_argument('--batch_size', type=int, default=100000,
                     help="Number of documents per batch")
 parser.add_argument('--skip_process_kilt', default=False, action='store_true')
 parser.add_argument('--skip_process_marco_v2', default=False, action='store_true')
-# parser.add_argument('--skip_process_marco_v1', default=False, action='store_true')
 parser.add_argument('--skip_process_wapo', default=False, action='store_true')
 parser.add_argument('--output_dir', type=str, default="files",
                     help="Directory to write files to")
