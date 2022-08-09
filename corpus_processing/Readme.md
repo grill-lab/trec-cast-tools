@@ -1,4 +1,4 @@
-# TCorpus Processing
+# Corpus Processing
 
 Utility tools to create trecweb and jsonlines files from the MARCO, KILT, and WaPo collections can be found in this directory. During the file creation process, each document in a collection is chunked into smaller passages. 
 
