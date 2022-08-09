@@ -1,10 +1,10 @@
-# TREC CAsT Y4 Tools
+# TCorpus Processing
 
-Utility tools to create trecweb and jsonlines files from the MARCO, KILT, and WaPo collections can be found in the `src/main/python` directory. During the file creation process, each document in a collection is chunked into smaller passages. 
+Utility tools to create trecweb and jsonlines files from the MARCO, KILT, and WaPo collections can be found in this directory. During the file creation process, each document in a collection is chunked into smaller passages. 
 
 Each document has an ID, url, title, and body. You can refer to http://www.treccast.ai/ to learn more about the Document ID format used for CAsT. Passage ID is based on the position of a passage within a document. 
 
-Below is an sample document in `trecweb` format that is generated from KILT after running the utility:
+Below is a sample document in `trecweb` format that is generated from KILT after running the utility:
 
 ```
 <DOC>
@@ -62,7 +62,6 @@ and here is a `jsonlines` sample
 
 ## How to use
 
-1. `cd` into `src/main/python`
 1. Create and activate a Python Virtual Environment using `python3 -m venv env` then `source env/bin/activate`
 2. Install the dependencies using `pip install -r requirements.txt`
 
