@@ -10,4 +10,4 @@ The repository is organised as follows:
 
 This repository has been reorganised recently, with lots of old code removed. 
 
-Code for previous years can be found starting from this commit 59a6e7220bcecb60ebfb12a1ba0365f2bbf1db27 in the git history. 
+Code for previous years can be found starting from this commit [59a6e7220bc](https://github.com/grill-lab/trec-cast-tools/tree/59a6e7220bcecb60ebfb12a1ba0365f2bbf1db27) in the git history. 
