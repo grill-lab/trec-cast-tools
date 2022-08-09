@@ -44,12 +44,15 @@ with open(sys.argv[2]) as run_file:
     except Exception as e:
         # Run file is not in the right format. Exit
         logger.error(e)
+        logger.error("Run file not in the right format. Exiting...")
         sys.exit(255)
 
+# Run checks and generate run file
 for turn in run.turns:
     # check turns are valid
     if warning_count >= 25:
         # too many warnings
+        logger.error("Too many Warnings. Run file will not be generated")
         sys.exit(255)
     if turn.turn_id in turn_lookup_set:
         # check that responses are valid
@@ -63,20 +66,28 @@ for turn in run.turns:
                     passage_text = provenance.text
                     if passage_text.startswith("\n") and passage_text.endswith("\n"):
                         passage_text = passage_text.strip()
-                    # check hash
-                    md5_hash = hashlib.md5(passage_text.encode())
-                    try:
-                        assert md5_hash.hexdigest() == passage_lookup_dict[provenance.id]
-                    except Exception as e:
-                        logger.warning(f"Passage text for Passage {provenance.id} does not match master")
-                        print(md5_hash.hexdigest())
-                        warning_count += 1
+                    # check hashes
+                    # md5_hash = hashlib.md5(passage_text.encode())
+                    # try:
+                    #     assert md5_hash.hexdigest() == passage_lookup_dict[provenance.id]
+                    # except Exception as e:
+                    #     logger.warning(f"Passage text for Passage {provenance.id} does not match master")
+                    #     print(md5_hash.hexdigest())
+                    #     warning_count += 1
 
                 else:
                     logger.warning(f"{provenance.id} is not a valid passage id")
                     warning_count += 1
     else:
-        logger.warning(f"{turn.turn_id} is not valid")
+        logger.warning(f"Turn number {turn.turn_id} is not valid")
         warning_count += 1
+    
+# Generate trec run file, if all checks pass
+with open(f"{run_file_name}.run", "w") as run_file:
+    for turn in run.turns:
+        for response in turn.responses:
+            for rank, provenance in enumerate(response.provenance):
+                # query-id Q0 document-id rank score STANDARD
+                run_file.write(f"{turn.turn_id}\tQ0\t{provenance.id}\t{rank+1}\t{provenance.score}\t{run.run_name}\n")
 
 

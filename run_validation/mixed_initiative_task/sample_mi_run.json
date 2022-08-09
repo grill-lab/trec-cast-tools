@@ -1,0 +1,31 @@
+{
+    "run_name" : "sample_mi_run",
+    "turns": [
+        {
+            "turn_id": "132_1-1",
+            "questions": [
+                {
+                    "question": "Q0003",
+                    "score": 0.5
+                },
+                {
+                    "question": "Are you interested in local wines of California?",
+                    "score": 0.4
+                }
+            ]
+        },
+        {
+            "turn_id": "148-1-3",
+            "questions": [
+                {
+                    "question": "Would a list of biking routes near Los Angeles be interesting to you?",
+                    "score": 0.6
+                },
+                {
+                    "question": "Q0001",
+                    "score": 0.4
+                }
+            ]
+        }
+    ]
+}
