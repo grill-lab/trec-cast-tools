@@ -58,7 +58,7 @@ for turn in run.turns:
         # check that responses are valid
         for response in turn.responses:
             if not response.text:
-                logger.warning(f"{turn.turn_id} response text is missing")
+                logger.warning(f"Response text for turn {turn.turn_id} is missing")
                 warning_count += 1
             for provenance in response.provenance:
                 if provenance.id in passage_lookup_dict:
