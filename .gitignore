@@ -123,3 +123,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# custom
+*/*/files
+*/*/compiled_protobufs

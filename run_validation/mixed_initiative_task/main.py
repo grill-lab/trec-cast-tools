@@ -4,7 +4,7 @@ import csv
 from pathlib import Path, PurePath
 from google.protobuf.json_format import Parse, ParseDict
 
-from compiled_protobufs.mi_run_pb2 import CAsTMIRun
+from compiled_protobufs.mi_run_pb2 import CasTMiRun
 import logging
 
 
@@ -27,6 +27,12 @@ with open("files/2022_evaluation_topics_turn_ids.json") as turn_ids_file:
         turn_list = [f"{topic}_{turn}" for turn in turn_list]
         for turn in turn_list:
             turn_lookup_set.add(turn)  
+# check that topics were loaded correctly
+try:
+    assert len(turn_lookup_set) == 205
+except AssertionError:
+    print("Topics file not loaded correctly")
+    sys.exit(255)
 
 # collect all questions in pool
 question_pool_dict = {}
@@ -34,12 +40,18 @@ with open("files/2022_mixed_initiative_question_pool.json") as question_pool_fil
     question_pool = json.load(question_pool_file)
     for question in question_pool:
         question_pool_dict[question['question_id']] = question['question']
+# check that topics were loaded correctly
+try:
+    assert len(question_pool_dict) == 4554
+except AssertionError:
+    print("Topics file not loaded correctly")
+    sys.exit(255)
 
 # validate structure
 with open(sys.argv[2]) as run_file:
     try:
         run = json.load(run_file)
-        run = ParseDict(run, CAsTMIRun())
+        run = ParseDict(run, CasTMiRun())
     except Exception as e:
         # Run file is not in the right format. Exit
         logger.error(e)
@@ -47,6 +59,10 @@ with open(sys.argv[2]) as run_file:
         sys.exit(255)
 
 # run checks
+if len(run.turns) == 0:
+    logger.error("Run file does not have any turns. Exiting...")
+    sys.exit(255)
+
 for turn in run.turns:
     # check turns are valid
     if warning_count >= 25:
