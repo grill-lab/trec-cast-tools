@@ -42,7 +42,7 @@ with open("files/2022_mixed_initiative_question_pool.json") as question_pool_fil
         question_pool_dict[question['question_id']] = question['question']
 # check that topics were loaded correctly
 try:
-    assert len(question_pool_dict) == 4554
+    assert len(question_pool_dict) == 4497
 except AssertionError:
     print("Topics file not loaded correctly")
     sys.exit(255)

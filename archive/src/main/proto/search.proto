@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package edu.gla.cast.search;
+option java_package = "edu.gla.cast.search";
+
+import "google/protobuf/timestamp.proto";
+
+// Turn is a single step in the conversation, representing a single
+// user utterance, roughly corresponding to a single 'query'.
+message SearchRequest {
+    google.protobuf.Timestamp time = 1; // The time of the creation of the request
+    string client_id = 2; // The ID of the client the request is sent from; required.
+    string query = 3; // Raw query string to execute.
+    Parameters parameters = 4; // Optional other query parameters.
+}
+
+// Optional query-level parameters.
+message Parameters {
+    // The ID of the collection being searched, optional.
+    string collection_id = 1;
+
+    // The number of results requested.
+    int32 num_results = 2;
+
+    // The search parameters needed to allow query-level parameter sweeps, optional.
+    map<string, string> parameters = 3;
+}
+
+message SearchResults {
+    SearchRequest request = 1;
+    repeated ScoredResult result = 2;
+    int32 hit_count = 3;
+    // TODO: Support other types of results.
+}
+
+message ScoredResult {
+    string id = 1;
+    double score = 2;
+    int32 rank = 3;
+    string title = 4;
+    string url = 5;
+    string short_description = 6;
+    string full_text = 7;
+    string raw_document = 8;
+}
