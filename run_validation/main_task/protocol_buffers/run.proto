@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+
+message CastRun {
+    string run_name = 1;
+    string run_type = 2;
+    repeated Turn turns = 3;
+}
+
+message Turn {
+    string turn_id = 1;
+    // each turn can have one or more responses
+    repeated Response responses = 2;
+}
+
+message Response {
+    // response to give to the user
+    string text = 1;
+    // rank of the response
+    int32 rank = 2;
+    // passages response is generated from
+    repeated Provenance provenance = 3;
+}
+
+message Provenance {
+    // also the passage id
+    string id = 1;
+    // passage text
+    string text = 2;
+    // passage score
+    float score = 3;
+}

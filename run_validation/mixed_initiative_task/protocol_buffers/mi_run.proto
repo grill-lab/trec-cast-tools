@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message CasTMiRun {
+    string run_name = 1;
+    repeated Turn turns = 2;
+}
+
+message Turn {
+    string turn_id = 1;
+    repeated Question questions = 2;
+}
+
+message Question {
+    // question id
+    string question = 1;
+    float score = 2;
+}
