@@ -6,7 +6,7 @@ from google.protobuf.json_format import Parse, ParseDict
 
 from compiled_protobufs.run_pb2 import CastRun
 import logging
-import hashlib
+import requests
 import argparse
 
 ap = argparse.ArgumentParser(description='TREC 2022 CAsT main task validator',
@@ -21,6 +21,8 @@ run_file_name = PurePath(args.path_to_run_file).name
 logging.basicConfig(filename= f"{run_file_name}.errlog", level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
+# logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 warning_count = 0
 
@@ -38,20 +40,6 @@ try:
     assert len(turn_lookup_set) == 205
 except AssertionError:
     print("Topics file not loaded correctly")
-    sys.exit(255)
-
-# collect passge ids and hashes
-with open(f"{args.fileroot}/files/all_hashes.csv") as passage_hashes_file:
-    passage_lookup_dict = {}
-    passage_hashes_reader = csv.reader(passage_hashes_file)
-    for row in passage_hashes_reader:
-        passage_lookup_dict[row[0]] = row[1]
-
-# check that passage ids and hashes were loaded correctly
-try:
-    assert len(passage_lookup_dict.keys()) == 106400940
-except AssertionError:
-    print("Passage Ids and hashes not loaded correctly")
     sys.exit(255)
 
 # validate structure
@@ -102,7 +90,8 @@ for turn in run.turns:
                 if provenance_count > 1000:
                     logger.warning(f"More than 1000 passages retrieved for turn {turn.turn_id}")
                     warning_count += 1
-                if provenance.id not in passage_lookup_dict:
+                passage_validation_response = requests.get(f"http://localhost:5000/{provenance.id}")
+                if not passage_validation_response.json()['is_valid']:
                     logger.warning(f"{provenance.id} is not a valid passage id")
                     warning_count += 1
                 provenance_count += 1
