@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message PassageValidationRequest {
+    repeated string passage_ids = 1;
+}
+
+message PassageValidationResult {
+    repeated PassageValidation passage_validations = 1;
+}
+
+message PassageValidation {
+    bool is_valid = 1;
+}
+
+service PassageValidator {
+    rpc validate_passages(PassageValidationRequest) returns (PassageValidationResult) {}
+}

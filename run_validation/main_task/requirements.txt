@@ -1,4 +1,2 @@
 grpcio 
 grpcio_tools
-flask
-requests

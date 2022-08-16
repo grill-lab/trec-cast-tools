@@ -14,9 +14,12 @@ Compile protocol buffers
 - `bash compile_protos.sh`
 
 Run Passage Validator Flask app in background
-- `python3 passage_validator.py`
+- `python3 passage_validator_servicer.py`
 
-Run main script (in another terminal but within virtual env)
+Run main validation script (in another terminal but within same virtual env)
 - `python3 main.py CAST [path to run file] [--skip_passage_validation]`
 
 NOTE: `--skip_passage_validation` is an optional argument that skips passage validation if added. If used, passage_validator does not need to be run in the background.
+
+To generate a trec run file, ideally after main script runs successfully
+- `python3 generate_run.py [path to run file]`

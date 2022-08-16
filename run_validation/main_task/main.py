@@ -1,12 +1,17 @@
 import sys
+sys.path.append("./compiled_protobufs")
 import json
 from pathlib import Path, PurePath
 from google.protobuf.json_format import Parse, ParseDict
 
 from compiled_protobufs.run_pb2 import CastRun
 import logging
-import requests
 import argparse
+import grpc
+
+from utils import *
+
+from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorStub
 
 ap = argparse.ArgumentParser(description='TREC 2022 CAsT main task validator',
                              formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -25,6 +30,9 @@ logger=logging.getLogger(__name__)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 warning_count = 0
+
+passage_validation_channel = grpc.insecure_channel('localhost:8000')
+passage_validation_client = PassageValidatorStub(passage_validation_channel)
 
 # collect all turn ids
 with open(f"{args.fileroot}/files/2022_evaluation_topics_turn_ids.json") as turn_ids_file:
@@ -61,59 +69,33 @@ if len(run.turns) == 0:
 for turn in run.turns:
     if warning_count >= 25:
         # too many warnings
-        logger.error("Too many Warnings. Run file will not be generated")
+        logger.error("Too many warnings. Exiting...")
         sys.exit(255)
     # check turns are valid
     if turn.turn_id in turn_lookup_set:
         # check that responses are valid
         provenance_count = 0
         previous_rank = 0
+
+        if not args.skip_passage_validation:
+            warning_count = validate_passages(passage_validation_client, logger, warning_count, turn)
+
+        # check response and provenance
         for response in turn.responses:
-            if not response.rank:
-                logger.warning(f"Response rank for turn {turn.turn_id} is missing")
-                warning_count += 1
-            if response.rank <= previous_rank:
-                logger.warning(f"Current rank {response.rank} is less than or equal to previous rank {previous_rank}")
-                warning_count += 1
-            if not response.text:
-                logger.warning(f"Response text for turn {turn.turn_id} is missing")
-                warning_count += 1
+            # check response
+            warning_count = check_response(response, logger, warning_count, previous_rank, turn)
             previous_score = None
+            # check provenance
             for provenance in response.provenance:
-                if previous_score is None:
-                    previous_score = provenance.score
-                elif previous_score <= provenance.score:
-                    previous_score = provenance.score
-                elif previous_score < provenance.score:
-                    logger.warning(f"{provenance.id} has a greater score than previous passage. Ranking order not correct")
-                    warning_count += 1
-                if provenance_count > 1000:
-                    logger.warning(f"More than 1000 passages retrieved for turn {turn.turn_id}")
-                    warning_count += 1
-                if not args.skip_passage_validation:
-                    passage_validation_response = requests.get(f"http://localhost:5000/{provenance.id}")
-                    if not passage_validation_response.json()['is_valid']:
-                        logger.warning(f"{provenance.id} is not a valid passage id")
-                        warning_count += 1
-                provenance_count += 1
+                previous_score, provenance_score, warning_count = check_provenance(
+                    previous_score, 
+                    provenance, 
+                    logger, 
+                    turn, 
+                    warning_count, 
+                    provenance_count
+                )
+                
     else:
         logger.warning(f"Turn number {turn.turn_id} is not valid")
         warning_count += 1
-
-# Generate trec run file, if all checks pass
-with open(f"{run_file_name}.run", "w") as run_file:
-    for turn in run.turns:
-        provenance_list = list()
-        provenance_set = set()
-        for response in turn.responses:
-            for provenance in response.provenance:
-                if provenance.id not in provenance_set:
-                    # update provenance score
-                    provenance.score = (1 / (response.rank+1)) * provenance.score
-                    provenance_list.append(provenance)
-                    provenance_set.add(provenance.id)
-        # sort list
-        provenance_list.sort(key=lambda provenance: provenance.score, reverse=True)
-        # write to file
-        for rank, provenance in enumerate(provenance_list):
-            run_file.write(f"{turn.turn_id}\tQ0\t{provenance.id}\t{rank+1}\t{provenance.score}\t{run.run_name}\n")
