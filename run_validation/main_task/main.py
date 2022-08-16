@@ -91,7 +91,6 @@ for turn in run.turns:
                     logger.warning(f"More than 1000 passages retrieved for turn {turn.turn_id}")
                     warning_count += 1
                 if not args.skip_passage_validation:
-                    print("here")
                     passage_validation_response = requests.get(f"http://localhost:5000/{provenance.id}")
                     if not passage_validation_response.json()['is_valid']:
                         logger.warning(f"{provenance.id} is not a valid passage id")
