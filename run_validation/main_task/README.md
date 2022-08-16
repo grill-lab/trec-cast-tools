@@ -13,7 +13,7 @@ Install requirements
 Compile protocol buffers
 - `bash compile_protos.sh`
 
-Run Passage Validator Flask app in background
+Run Passage Validator service in background
 - `python3 passage_validator_servicer.py`
 
 Run main validation script (in another terminal but within same virtual env)
