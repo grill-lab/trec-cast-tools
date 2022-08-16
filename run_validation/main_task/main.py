@@ -1,6 +1,5 @@
 import sys
 import json
-import csv
 from pathlib import Path, PurePath
 from google.protobuf.json_format import Parse, ParseDict
 
@@ -15,6 +14,7 @@ ap.add_argument('-f', '--fileroot', help='Location of data files',
                 default='.')
 ap.add_argument('task_name')
 ap.add_argument('path_to_run_file')
+ap.add_argument('--skip_passage_validation', action='store_true')
 args = ap.parse_args()
 
 run_file_name = PurePath(args.path_to_run_file).name
@@ -90,10 +90,12 @@ for turn in run.turns:
                 if provenance_count > 1000:
                     logger.warning(f"More than 1000 passages retrieved for turn {turn.turn_id}")
                     warning_count += 1
-                passage_validation_response = requests.get(f"http://localhost:5000/{provenance.id}")
-                if not passage_validation_response.json()['is_valid']:
-                    logger.warning(f"{provenance.id} is not a valid passage id")
-                    warning_count += 1
+                if not args.skip_passage_validation:
+                    print("here")
+                    passage_validation_response = requests.get(f"http://localhost:5000/{provenance.id}")
+                    if not passage_validation_response.json()['is_valid']:
+                        logger.warning(f"{provenance.id} is not a valid passage id")
+                        warning_count += 1
                 provenance_count += 1
     else:
         logger.warning(f"Turn number {turn.turn_id} is not valid")

@@ -14,4 +14,4 @@ Compile protocol buffers
 - `bash compile_protos.sh`
 
 Run script
-- `python3 main.py`
+- `python3 main.py CAST [path to run file]`
