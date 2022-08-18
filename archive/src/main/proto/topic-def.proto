@@ -1,6 +1,7 @@
 
 syntax = "proto3";
 
+package cast.topics; 
 
 // A set of topics (e.g. year 3 evaluation). This allows loading and working
 // with multiple topic sets more clearly.
