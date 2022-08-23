@@ -11,6 +11,6 @@ SAMPLE_HASHES_PATH = os.path.join(os.path.dirname(__file__), 'sample_hashes.csv'
 def sample_database(tmp_path):
     hdb = PassageIDDatabase(tmp_path / 'temp.sqlite3')
     hdb.open()
-    hdb.populate(SAMPLE_HASHES_PATH, 5000, 5000)
+    hdb.populate(SAMPLE_HASHES_PATH, 5000, 1)
     yield hdb
     hdb.close()
