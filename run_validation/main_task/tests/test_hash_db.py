@@ -1,6 +1,6 @@
 import os
 
-from hash_db import HashDatabase
+from passage_id_db import PassageIDDatabase
 
 TEMP_FILE = 'temp.sqlite3'
 
@@ -9,7 +9,7 @@ def test_create_empty_database(tmp_path):
     if os.path.exists(path):
         os.unlink(path)
 
-    with HashDatabase(path) as hdb:
+    with PassageIDDatabase(path) as hdb:
         assert hdb.open()
         assert os.path.exists(path)
 

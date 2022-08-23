@@ -3,14 +3,14 @@ import sys
 from compiled_protobufs.passage_validator_pb2 import PassageValidationRequest, PassageValidationResult, PassageValidation
 from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorServicer
 
-from hash_db import HashDatabase
+from passage_id_db import PassageIDDatabase
 
 EXEPCTED_HASH_COUNT = 106400940
 
 class PassageValidator(PassageValidatorServicer):
 
     def __init__(self) -> None:
-        self.db = HashDatabase('./files/all_hashes.sqlite3')
+        self.db = PassageIDDatabase('./files/all_hashes.sqlite3')
         if not self.db.open():
             print('Error: failed to open database, service cannot start!')
             sys.exit(255)

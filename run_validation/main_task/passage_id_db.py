@@ -23,7 +23,7 @@ logger.setLevel(LOGLEVEL)
 logger.addHandler(logging.StreamHandler(sys.stdout))
 logger.addHandler(logging.FileHandler(__file__ + '.log'))
 
-class HashDatabase:
+class PassageIDDatabase:
 
     TABLE_NAME = 'passage_ids'
     COL_NAME = 'id'
@@ -37,8 +37,8 @@ class HashDatabase:
         (Re)create the database schema
         """
         try:
-            self.cur.execute(f'DROP TABLE IF EXISTS {HashDatabase.TABLE_NAME}')
-            self.cur.execute(f'CREATE TABLE {HashDatabase.TABLE_NAME} ({HashDatabase.COL_NAME} TEXT PRIMARY KEY NOT NULL)')
+            self.cur.execute(f'DROP TABLE IF EXISTS {PassageIDDatabase.TABLE_NAME}')
+            self.cur.execute(f'CREATE TABLE {PassageIDDatabase.TABLE_NAME} ({PassageIDDatabase.COL_NAME} TEXT PRIMARY KEY NOT NULL)')
         except sqlite3.Error as sqle:
             logger.error(f'Error initialising database: {sqle}')
             return False
@@ -89,7 +89,7 @@ class HashDatabase:
                 batch.append((row[0], ))
 
                 if len(batch) == batch_size:
-                    self.cur.executemany(f'INSERT INTO {HashDatabase.TABLE_NAME} VALUES (?)', batch)
+                    self.cur.executemany(f'INSERT INTO {PassageIDDatabase.TABLE_NAME} VALUES (?)', batch)
                     self.db.commit()
                     inserted += len(batch)
                     if inserted % print_interval == 0:
@@ -97,7 +97,7 @@ class HashDatabase:
                     batch = []
 
             # final partial batch
-            self.cur.executemany(f'INSERT INTO {HashDatabase.TABLE_NAME} VALUES (?)', batch)
+            self.cur.executemany(f'INSERT INTO {PassageIDDatabase.TABLE_NAME} VALUES (?)', batch)
             self.db.commit()
             inserted += len(batch)
             logger.info(f'Inserted {inserted:9d} rows')
@@ -110,8 +110,8 @@ class HashDatabase:
     def validate(self, ids: [str]) -> [bool]:
         results = []
         for id in ids:
-            self.cur.execute(f'SELECT {HashDatabase.COL_NAME} FROM {HashDatabase.TABLE_NAME} \
-                    WHERE {HashDatabase.COL_NAME} = ?', (id, ))
+            self.cur.execute(f'SELECT {PassageIDDatabase.COL_NAME} FROM {PassageIDDatabase.TABLE_NAME} \
+                    WHERE {PassageIDDatabase.COL_NAME} = ?', (id, ))
             result = self.cur.fetchone()
             results.append(False if result is None else True)
             logger.debug(f'Validate {id} = {result is not None}')
@@ -127,7 +127,7 @@ class HashDatabase:
 
     @property
     def rowcount(self):
-        self.cur.execute(f'SELECT COUNT({HashDatabase.COL_NAME}) FROM {HashDatabase.TABLE_NAME}')
+        self.cur.execute(f'SELECT COUNT({PassageIDDatabase.COL_NAME}) FROM {PassageIDDatabase.TABLE_NAME}')
         return self.cur.fetchone()[0]
 
 if __name__ == "__main__":
@@ -151,7 +151,7 @@ if __name__ == "__main__":
     if os.path.exists(db_name):
         os.unlink(db_name)
 
-    with HashDatabase(db_name) as hdb:
+    with PassageIDDatabase(db_name) as hdb:
         if not hdb.populate(args.hash_file, args.batch_size, args.print_interval):
             print('Error: failed to populate the database!')
             sys.exit(255)
