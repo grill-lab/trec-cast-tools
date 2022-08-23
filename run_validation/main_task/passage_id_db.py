@@ -13,9 +13,9 @@ import logging
 #
 
 DEFAULT_BATCH_SIZE = 20000
-DEFAULT_PRINT_INTERVAL = 100000
+DEFAULT_PRINT_INTERVAL = 20
 
-LOGLEVEL = logging.DEBUG
+LOGLEVEL = logging.INFO
 
 logger = logging.Logger(__file__)
 logger.setLevel(LOGLEVEL)
@@ -43,6 +43,7 @@ class PassageIDDatabase:
             logger.error(f'Error initialising database: {sqle}')
             return False
 
+        self.cur.execute('PRAGMA cache_size = 1000000')
         return True
 
     def open(self) -> bool:
@@ -83,6 +84,7 @@ class PassageIDDatabase:
 
         batch = []
         inserted = 0
+        batch_count = 0
         with open(hash_file, 'r') as hf:
             rdr = csv.reader(hf)
             for row in rdr:
@@ -92,9 +94,11 @@ class PassageIDDatabase:
                     self.cur.executemany(f'INSERT INTO {PassageIDDatabase.TABLE_NAME} VALUES (?)', batch)
                     self.db.commit()
                     inserted += len(batch)
-                    if inserted % print_interval == 0:
-                        logger.info(f'Inserted {inserted:9d} rows')
+                    batch_count += 1
                     batch = []
+
+                    if batch_count % print_interval == 0:
+                        logger.info(f'Inserted {inserted:9d} rows')
 
             # final partial batch
             self.cur.executemany(f'INSERT INTO {PassageIDDatabase.TABLE_NAME} VALUES (?)', batch)
@@ -121,7 +125,6 @@ class PassageIDDatabase:
     def close(self):
         if self.db is not None:
             self.db.commit()
-            logger.debug('Closing database')
             self.db.close()
         return True
 
@@ -135,7 +138,7 @@ if __name__ == "__main__":
     parser.add_argument('hash_file')
     parser.add_argument('-b', '--batch_size', help='Number of rows in each insert transaction', 
                 type=int, default=DEFAULT_BATCH_SIZE)
-    parser.add_argument('-i', '--print_interval', help='Print number of rows inserted at this interval', 
+    parser.add_argument('-i', '--print_interval', help='Display number of rows inserted after every <print_interval> batches', 
                 type=int, default=DEFAULT_PRINT_INTERVAL)
     args = parser.parse_args()
 
