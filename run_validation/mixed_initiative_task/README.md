@@ -15,3 +15,6 @@ Compile protocol buffers
 
 Run script
 - `python3 main.py CAST [path to run file]`
+
+Run tests
+- `python3 -m pytest`
