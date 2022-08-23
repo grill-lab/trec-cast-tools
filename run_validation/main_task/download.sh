@@ -21,7 +21,6 @@ then
     echo "Checksum failed to match!"
     exit 1
 fi
-exit
 
 echo "Building database"
 python3 passage_id_db.py -b 20000 -i 20 files/all_hashes.csv
