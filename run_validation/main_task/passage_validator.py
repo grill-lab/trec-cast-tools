@@ -1,37 +1,37 @@
-import csv
 import sys
+
 from compiled_protobufs.passage_validator_pb2 import PassageValidationRequest, PassageValidationResult, PassageValidation
 from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorServicer
+
+from hash_db import HashDatabase
+
+EXEPCTED_HASH_COUNT = 106400940
 
 class PassageValidator(PassageValidatorServicer):
 
     def __init__(self) -> None:
-        # collect passge ids and hashes
-        with open("./files/all_hashes.csv") as passage_hashes_file:
-            self.passage_lookup_dict = {}
-            passage_hashes_reader = csv.reader(passage_hashes_file)
-            for row in passage_hashes_reader:
-                self.passage_lookup_dict[row[0]] = row[1]
-
-        # check that passage ids and hashes were loaded correctly
-        try:
-            assert len(self.passage_lookup_dict.keys()) == 106400940
-        except AssertionError:
-            print("Passage Ids and hashes not loaded correctly")
+        self.db = HashDatabase('./files/all_hashes.sqlite3')
+        if not self.db.open():
+            print('Error: failed to open database, service cannot start!')
             sys.exit(255)
-        
-        print("Passage IDs loaded!")
+
+        assert(self.db.rowcount == EXEPCTED_HASH_COUNT)
+        print('Service ready')
 
     def validate_passages(self,  passage_validation_request: PassageValidationRequest, 
-        context) -> PassageValidationResult:
+            context) -> PassageValidationResult:
         """
-        Takes in a list of passage ids and checks for membership in passage 
-        lookup dictionary
+        Takes in a list of passage ids and checks if they appear in the database
         """
         passage_validation_result = PassageValidationResult()
-        for passage_id in passage_validation_request.passage_ids:
+
+        # query database with the set of passage IDs and return a list of bools
+        # indicate valid/invalid for each ID
+        validation_results = self.db.validate(passage_validation_request.passage_ids)
+
+        for result in validation_results:
             passage_validation = PassageValidation()
-            passage_validation.is_valid = passage_id in self.passage_lookup_dict
+            passage_validation.is_valid = result
             passage_validation_result.passage_validations.append(passage_validation)
-        
+
         return passage_validation_result
