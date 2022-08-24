@@ -19,7 +19,7 @@ def check_response(response: PassageValidationResult, logger: Logger, warning_co
     
     return warning_count
 
-def check_provenance(previous_score: float, provenance: Provenance, logger: Logger, turn: Turn, warning_count: int, provenance_count: int):
+def check_provenance(previous_score: float, provenance: Provenance, logger: Logger, turn: Turn, warning_count: int, provenance_count: int) -> (float, int, int):
     if previous_score is None:
         previous_score = provenance.score
     elif previous_score <= provenance.score:
@@ -32,7 +32,6 @@ def check_provenance(previous_score: float, provenance: Provenance, logger: Logg
         warning_count += 1
     provenance_count += 1
 
-    print(previous_score, provenance_count, warning_count)
     return previous_score, provenance_count, warning_count
 
 def validate_passages(passage_validation_client: PassageValidatorStub, logger: Logger, warning_count: int, turn: Turn) -> int:
