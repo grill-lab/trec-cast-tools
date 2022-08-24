@@ -24,6 +24,7 @@ def serve(db_path, expected_rows):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('db_path', type=str, help='SQLite database path', default='./files/all_hashes.sqlite3')
-    parser.add_argument('expected_rows', type=int, help='Expected number of rows in database (0 to skip checking)', default=EXPECTED_ID_COUNT)
+    parser.add_argument('expected_rows', type=int, nargs='?', default=EXPECTED_ID_COUNT, 
+        help='Expected number of rows in the database (0 to skip checking, omit to use the correct count for all_hashes.csv)')
     args = parser.parse_args()
     serve(args.db_path, args.expected_rows)
