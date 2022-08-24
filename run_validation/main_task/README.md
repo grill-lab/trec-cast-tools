@@ -14,7 +14,7 @@ Compile protocol buffers
 - `bash compile_protos.sh`
 
 Run Passage Validator service in background
-- `python3 passage_validator_servicer.py`
+- `python3 passage_validator_servicer.py files/all_hashes.sqlite3`
 
 Run main validation script (in another terminal but within same virtual env)
 - `python3 main.py CAST [path to run file] [--skip_passage_validation]`
