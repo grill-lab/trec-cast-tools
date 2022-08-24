@@ -1,6 +1,10 @@
-from compiled_protobufs.passage_validator_pb2 import PassageValidationRequest, PassageValidationResult
+from logging import Logger
 
-def check_response(response, logger, warning_count, previous_rank, turn):
+from compiled_protobufs.passage_validator_pb2 import PassageValidationRequest, PassageValidationResult
+from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorStub
+from compiled_protobufs.run_pb2 import Turn, Provenance
+
+def check_response(response: PassageValidationResult, logger: Logger, warning_count: int, previous_rank: int, turn: Turn) -> int:
     if not response.rank:
         logger.warning(f"Response rank for turn {turn.turn_id} is missing or equal  to 0")
         warning_count += 1
@@ -15,7 +19,7 @@ def check_response(response, logger, warning_count, previous_rank, turn):
     
     return warning_count
 
-def check_provenance(previous_score, provenance, logger, turn, warning_count, provenance_count):
+def check_provenance(previous_score: float, provenance: Provenance, logger: Logger, turn: Turn, warning_count: int, provenance_count: int):
     if previous_score is None:
         previous_score = provenance.score
     elif previous_score <= provenance.score:
@@ -28,23 +32,28 @@ def check_provenance(previous_score, provenance, logger, turn, warning_count, pr
         warning_count += 1
     provenance_count += 1
 
+    print(previous_score, provenance_count, warning_count)
     return previous_score, provenance_count, warning_count
 
-def validate_passages(passage_validation_client, logger, warning_count, turn):
+def validate_passages(passage_validation_client: PassageValidatorStub, logger: Logger, warning_count: int, turn: Turn) -> int:
     # collect passage ids
     passage_validation_request = PassageValidationRequest()
-    passage_ids = []
+
+    passage_ids = set()
     for response in turn.responses:
         for provenance in response.provenance:
-            passage_ids.append(provenance.id)
-    # remove duplicates
-    passage_ids = list(set(passage_ids))
+            passage_ids.add(provenance.id)
+
+    passage_ids = list(passage_ids)
+
     passage_validation_request.passage_ids.MergeFrom(passage_ids)
+
     # validate ids
     passage_validation_result = passage_validation_client.validate_passages(passage_validation_request)
+
     invalid_indexes = [i for i, passage_validation in enumerate(passage_validation_result.passage_validations) if not passage_validation.is_valid]
     for index in invalid_indexes:
         logger.warning(f"Provenance with ID {passage_ids[index]} does not exist in the passage collection")
-    warning_count += len(invalid_indexes)
 
+    warning_count += len(invalid_indexes)
     return warning_count
