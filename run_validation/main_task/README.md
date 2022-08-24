@@ -23,3 +23,13 @@ NOTE: `--skip_passage_validation` is an optional argument that skips passage val
 
 To generate a trec run file, ideally after main script runs successfully
 - `python3 generate_run.py [path to run file]`
+
+### Tests
+
+To run the normal set of tests:
+
+- `pytest`
+
+To run the full set (including some slower tests):
+
+- `pytest --runslow`
