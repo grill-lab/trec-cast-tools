@@ -5,17 +5,16 @@ from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorServic
 
 from passage_id_db import PassageIDDatabase
 
-EXEPCTED_HASH_COUNT = 106400940
-
 class PassageValidator(PassageValidatorServicer):
 
-    def __init__(self) -> None:
-        self.db = PassageIDDatabase('./files/all_hashes.sqlite3')
+    def __init__(self, db_path: str, expected_rows: int) -> None:
+        self.db = PassageIDDatabase(db_path)
         if not self.db.open():
             print('Error: failed to open database, service cannot start!')
             sys.exit(255)
 
-        assert(self.db.rowcount == EXEPCTED_HASH_COUNT)
+        if expected_rows > 0:
+            assert(self.db.rowcount == expected_rows)
         print('Service ready')
 
     def validate_passages(self,  passage_validation_request: PassageValidationRequest, 
