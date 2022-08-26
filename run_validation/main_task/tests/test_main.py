@@ -21,8 +21,11 @@ def test_load_invalid_turn_lookup_set(tmp_path):
     with open(tmp_file, 'w') as tf:
         tf.write(json_str)
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(SystemExit) as pytest_exc:
         _ = load_turn_lookup_set(tmp_file)
+
+    assert pytest_exc.type == SystemExit
+    assert pytest_exc.value.code == 255
 
 def test_load_missing_turn_lookup_set():
     with pytest.raises(Exception):
@@ -38,8 +41,11 @@ def test_validate_invalid_run_file(tmp_path):
     with open(tmp_file, 'w') as tf:
         tf.write(json_str)
 
-    with pytest.raises(Exception):
+    with pytest.raises(SystemExit) as pytest_exc:
         _ = load_run_file(tmp_file)
+
+    assert pytest_exc.type == SystemExit
+    assert pytest_exc.value.code == 255
 
 def test_validate_missing_run_file():
     with pytest.raises(OSError):

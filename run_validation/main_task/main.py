@@ -48,21 +48,21 @@ def load_turn_lookup_set(turns_path: str) -> dict:
     # check that topics were loaded correctly
     try:
         assert len(turn_lookup_set) == 205
-    except AssertionError as ae:
+    except AssertionError:
         logger.error('Topics file not loaded correctly')
-        raise ae
+        sys.exit(255)
 
     return turn_lookup_set
 
 def load_run_file(run_file_path: str) -> CastRun:
     # validate structure
-    with open(run_file_path) as run_file:
+    with open(run_file_path, 'r', encoding='utf-8') as run_file:
         try:
             run = json.load(run_file)
             run = ParseDict(run, CastRun())
         except Exception as e:
             logger.error(f'Run file not in the right format ({e})')
-            raise Exception(f'Run file not in the right format ({e})')
+            sys.exit(255)
 
     return run
 
