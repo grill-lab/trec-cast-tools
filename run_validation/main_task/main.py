@@ -56,7 +56,7 @@ def load_turn_lookup_set(turns_path: str) -> dict:
 
 def load_run_file(run_file_path: str) -> CastRun:
     # validate structure
-    with open(run_file_path) as run_file:
+    with open(run_file_path, 'r', encoding='utf-8') as run_file:
         try:
             run = json.load(run_file)
             run = ParseDict(run, CastRun())
