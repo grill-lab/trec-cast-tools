@@ -14,7 +14,7 @@ Compile protocol buffers
 - `bash compile_protos.sh`
 
 Run Passage Validator service in background
-- `python3 passage_validator_servicer.py`
+- `python3 passage_validator_servicer.py files/all_hashes.sqlite3`
 
 Run main validation script (in another terminal but within same virtual env)
 - `python3 main.py CAST [path to run file] [--skip_passage_validation]`
@@ -23,3 +23,13 @@ NOTE: `--skip_passage_validation` is an optional argument that skips passage val
 
 To generate a trec run file, ideally after main script runs successfully
 - `python3 generate_run.py [path to run file]`
+
+### Tests
+
+To run the normal set of tests:
+
+- `pytest`
+
+To run the full set (including some slower tests):
+
+- `pytest --runslow`

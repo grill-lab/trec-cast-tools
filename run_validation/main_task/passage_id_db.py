@@ -122,15 +122,18 @@ class PassageIDDatabase:
 
         return results
 
-    def close(self):
+    def close(self) -> bool:
         if self.db is not None:
             self.db.commit()
             self.db.close()
         return True
 
     @property
-    def rowcount(self):
-        self.cur.execute(f'SELECT COUNT({PassageIDDatabase.COL_NAME}) FROM {PassageIDDatabase.TABLE_NAME}')
+    def rowcount(self) -> int:
+        try:
+            self.cur.execute(f'SELECT COUNT({PassageIDDatabase.COL_NAME}) FROM {PassageIDDatabase.TABLE_NAME}')
+        except sqlite3.OperationalError:
+            return -1
         return self.cur.fetchone()[0]
 
 if __name__ == "__main__":
