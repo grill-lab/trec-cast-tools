@@ -119,11 +119,11 @@ def validate_run(run: CastRun, turn_lookup_set: dict, service_stub: PassageValid
 
         if total_warnings > max_warnings:
             logger.error(f'Maximum number of warnings exceeded ({total_warnings} > {max_warnings}), aborting!')
-            return turns_validated, service_errors, total_warnings
+            sys.exit(255)
 
         if service_errors > 0 and strict:
             logger.error('Validation service errors encountered and strict mode enabled')
-            return turns_validated, service_errors, total_warnings
+            sys.exit(255)
 
     logger.info(f'Validation completed on {turns_validated}/{len(run.turns)} turns with {total_warnings} warnings, {service_errors} service errors')
     return turns_validated, service_errors, total_warnings
