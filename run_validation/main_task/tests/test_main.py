@@ -63,10 +63,19 @@ def test_validate_run(turns_lookup_path, run_file_path, grpc_stub_test, default_
     run = load_run_file(run_file_path)
     assert(len(run.turns) == 205)
     
+    # only validate the first few turns to avoid generating lots of warnings, which will
+    # otherwise end the validation process early by calling sys.exit and leave us unable
+    # to check the return values
+    first_turns = copy.deepcopy(run.turns[:8])
+    del run.turns[:]
+    run.turns.extend(first_turns)
+    assert(len(run.turns) == 8)
+
     turns_validated, service_errors, total_warnings = validate_run(run, turn_lookup_set, grpc_stub_test, args.max_warnings, args.strict)
-    assert(turns_validated == 9)
+
+    assert(turns_validated == 8)
     assert(service_errors == 0)
-    assert(total_warnings == 28)
+    assert(total_warnings == 25)
 
 def test_validate_run_strict(turns_lookup_path, run_file_path, grpc_stub_test, default_validate_args):
     args = default_validate_args
@@ -74,11 +83,41 @@ def test_validate_run_strict(turns_lookup_path, run_file_path, grpc_stub_test, d
     turn_lookup_set = load_turn_lookup_set(turns_lookup_path)
     run = load_run_file(run_file_path)
     assert(len(run.turns) == 205)
+
+    # only validate the first few turns to avoid generating lots of warnings, which will
+    # otherwise end the validation process early by calling sys.exit and leave us unable
+    # to check the return values
+    first_turns = copy.deepcopy(run.turns[:8])
+    del run.turns[:]
+    run.turns.extend(first_turns)
+    assert(len(run.turns) == 8)
     
     turns_validated, service_errors, total_warnings = validate_run(run, turn_lookup_set, grpc_stub_test, args.max_warnings, args.strict)
-    assert(turns_validated == 9)
+    assert(turns_validated == 8)
     assert(service_errors == 0)
-    assert(total_warnings == 28)
+    assert(total_warnings == 25)
+
+@pytest.mark.slow
+def test_validate_run_strict_invalid(turns_lookup_path, run_file_path, grpc_stub_test_invalid, default_validate_args):
+    args = default_validate_args
+    args.strict = True
+    turn_lookup_set = load_turn_lookup_set(turns_lookup_path)
+    run = load_run_file(run_file_path)
+    assert(len(run.turns) == 205)
+
+    # only validate the first few turns to avoid generating lots of warnings, which will
+    # otherwise end the validation process early by calling sys.exit and leave us unable
+    # to check the return values
+    first_turns = copy.deepcopy(run.turns[:8])
+    del run.turns[:]
+    run.turns.extend(first_turns)
+    assert(len(run.turns) == 8)
+    
+    with pytest.raises(SystemExit) as pytest_exc:
+        turns_validated, service_errors, total_warnings = validate_run(run, turn_lookup_set, grpc_stub_test_invalid, args.max_warnings, args.strict)
+
+    assert pytest_exc.type == SystemExit
+    assert pytest_exc.value.code == 255
 
 def test_validate_run_no_service(turns_lookup_path, run_file_path, default_validate_args):
     args = default_validate_args
@@ -133,10 +172,11 @@ def test_validate_no_service_strict(default_validate_args, grpc_server_full):
     # terminate the service
     grpc_server_full.stop(None)
 
-    turns_validated, service_errors, total_warnings = validate(args.path_to_run_file, args.fileroot, args.max_warnings, args.skip_passage_validation, args.strict)
-    assert(turns_validated == 1)
-    assert(service_errors == 1)
-    assert(total_warnings == 0) 
+    with pytest.raises(SystemExit) as pytest_exc:
+        turns_validated, service_errors, total_warnings = validate(args.path_to_run_file, args.fileroot, args.max_warnings, args.skip_passage_validation, args.strict)
+
+    assert(pytest_exc.type == SystemExit)
+    assert(pytest_exc.value.code == 255)
 
 def test_validate_empty(default_validate_args):
     args = default_validate_args
@@ -148,8 +188,8 @@ def test_validate_small(default_validate_args, grpc_server_test):
     args = default_validate_args
     
     # this should abort after generating enough warnings, since the smaller database won't match most of the IDs
-    turns_validated, service_errors, total_warnings = validate(args.path_to_run_file, args.fileroot, args.max_warnings, args.skip_passage_validation, args.strict)
+    with pytest.raises(SystemExit) as pytest_exc:
+        turns_validated, service_errors, total_warnings = validate(args.path_to_run_file, args.fileroot, args.max_warnings, args.skip_passage_validation, args.strict)
 
-    assert(turns_validated == 9)
-    assert(service_errors == 0)
-    assert(total_warnings == 28)
+    assert(pytest_exc.type == SystemExit)
+    assert(pytest_exc.value.code == 255)
