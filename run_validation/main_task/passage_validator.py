@@ -10,10 +10,13 @@ class PassageValidator(PassageValidatorServicer):
     def __init__(self, db_path: str, expected_rows: int) -> None:
         self.db = PassageIDDatabase(db_path)
         if not self.db.open():
-            raise Exception('Error: failed to open database, service cannot start!')
+            print('Error: failed to open database, service cannot start!')
+            sys.exit(255)
 
         if expected_rows > 0 and self.db.rowcount != expected_rows:
-            raise Exception(f'Database row count of {self.db.rowcount} vs expected {expected_rows}, invalid path?')
+            print(f'Error: Database row count of {self.db.rowcount} vs expected {expected_rows}, invalid path?')
+            sys.exit(255)
+
         print('>> Service ready')
 
     def validate_passages(self,  passage_validation_request: PassageValidationRequest, 
