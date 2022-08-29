@@ -1,12 +1,12 @@
-import sys
+import argparse
 import json
-import csv
-from pathlib import Path, PurePath
-from google.protobuf.json_format import Parse, ParseDict
+import logging
+import sys
+
+from pathlib import PurePath
 
 from compiled_protobufs.mi_run_pb2 import CasTMiRun
-import logging
-import argparse
+from google.protobuf.json_format import ParseDict
 
 ap = argparse.ArgumentParser(description='TREC 2022 CAsT mixed initiative task validator',
                              formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -17,9 +17,9 @@ ap.add_argument('path_to_run_file')
 args = ap.parse_args()
 
 run_file_name = PurePath(args.path_to_run_file).name
-logging.basicConfig(filename= f"{run_file_name}.errlog", level=logging.DEBUG,
+logging.basicConfig(filename=f"{run_file_name}.errlog", level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 warning_count = 0
 
