@@ -29,7 +29,7 @@ def load_turn_ids(turn_ids_path: str) -> set:
     with open(turn_ids_path) as turn_ids_file:
         turn_ids_dict = json.load(turn_ids_file)
         for topic, turn_list in turn_ids_dict.items():
-            turn_list = [f"{topic}_{turn}" for turn in turn_list]
+            turn_list = [f'{topic}_{turn}' for turn in turn_list]
             for turn in turn_list:
                 turn_lookup_set.add(turn)
 
@@ -37,7 +37,7 @@ def load_turn_ids(turn_ids_path: str) -> set:
     try:
         assert len(turn_lookup_set) == 205
     except AssertionError:
-        print("Topics file not loaded correctly")
+        print('Topics file not loaded correctly')
         sys.exit(255)
 
     return turn_lookup_set
@@ -58,7 +58,7 @@ def load_question_pool(question_pool_path: str) -> dict:
     try:
         assert len(question_pool_dict) == 4497
     except AssertionError:
-        print("Topics file not loaded correctly")
+        print('Topics file not loaded correctly')
         sys.exit(255)
 
     return question_pool_dict
@@ -76,12 +76,12 @@ def load_run_file(run_file_path: str) -> CasTMiRun:
         except Exception as e:
             # Run file is not in the right format. Exit
             logger.error(e)
-            logger.error("Run file not in the right format. Exiting...")
+            logger.error('Run file not in the right format. Exiting...')
             sys.exit(255)
 
     # run checks
     if len(run.turns) == 0:
-        logger.error("Run file does not have any turns. Exiting...")
+        logger.error('Run file does not have any turns. Exiting...')
         sys.exit(255)
 
     return run
@@ -92,15 +92,15 @@ def validate_turn(turn: Turn, turn_lookup_set: set, question_pool_dict: dict) ->
     if turn.turn_id in turn_lookup_set:
         for index, question in enumerate(turn.questions):
             if not question.question or not question.score:
-                logger.warning(f"Turn {turn.turn_id} contains an empty question or question without score in question ranking at index {index}")
+                logger.warning(f'Turn {turn.turn_id} contains an empty question or question without score in question ranking at index {index}')
                 turn_warnings += 1
-            if question.question.startswith("Q") and question.question[1:].isdigit():
+            if question.question.startswith('Q') and question.question[1:].isdigit():
                 # check if question id is valid
                 if question.question not in question_pool_dict:
-                    logger.warning(f"{question.question} is not valid")
+                    logger.warning(f'{question.question} is not valid')
                     turn_warnings += 1
     else:
-        logger.warning(f"Turn number {turn.turn_id} is not valid")
+        logger.warning(f'Turn number {turn.turn_id} is not valid')
         turn_warnings += 1
 
     return turn_warnings
@@ -125,12 +125,12 @@ def validate_run(run_file_path: str, fileroot: str) -> int:
 
         if warning_count >= 25:
             # too many warnings
-            logger.error("Too many Warnings. Exiting..")
+            logger.error('Too many Warnings. Exiting..')
             sys.exit(255)
 
     return warning_count
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     ap = argparse.ArgumentParser(description='TREC 2022 CAsT mixed initiative task validator',
                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     ap.add_argument('task_name')
