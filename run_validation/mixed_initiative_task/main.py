@@ -9,6 +9,9 @@ from pathlib import PurePath
 from compiled_protobufs.mi_run_pb2 import CasTMiRun, Turn
 from google.protobuf.json_format import ParseDict
 
+EXPECTED_TURNS = 205
+EXPECTED_POOL_SIZE = 4497
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -16,7 +19,6 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s %(message)s')
 streamHandler = logging.StreamHandler(sys.stdout)
 streamHandler.setFormatter(formatter)
 logger.addHandler(streamHandler)
-
 
 def load_turn_ids(turn_ids_path: str) -> set:
     if not os.path.exists(turn_ids_path):
@@ -27,7 +29,12 @@ def load_turn_ids(turn_ids_path: str) -> set:
 
     # collect all turn ids
     with open(turn_ids_path) as turn_ids_file:
-        turn_ids_dict = json.load(turn_ids_file)
+        try:
+            turn_ids_dict = json.load(turn_ids_file)
+        except json.decoder.JSONDecodeError as jde:
+            logger.error(f'JSON error loading turn IDs file: {jde}')
+            sys.exit(255)
+
         for topic, turn_list in turn_ids_dict.items():
             turn_list = [f'{topic}_{turn}' for turn in turn_list]
             for turn in turn_list:
@@ -35,9 +42,9 @@ def load_turn_ids(turn_ids_path: str) -> set:
 
     # check that topics were loaded correctly
     try:
-        assert len(turn_lookup_set) == 205
+        assert len(turn_lookup_set) == EXPECTED_TURNS
     except AssertionError:
-        print('Topics file not loaded correctly')
+        logger.error(f'Topics file not loaded correctly (expected {EXPECTED_TURNS} turns, found {len(turn_lookup_set)}')
         sys.exit(255)
 
     return turn_lookup_set
@@ -50,15 +57,24 @@ def load_question_pool(question_pool_path: str) -> dict:
     # collect all questions in pool
     question_pool_dict = {}
     with open(question_pool_path) as question_pool_file:
-        question_pool = json.load(question_pool_file)
-        for question in question_pool:
-            question_pool_dict[question['question_id']] = question['question']
+        try:
+            question_pool = json.load(question_pool_file)
+        except json.decoder.JSONDecodeError as jde:
+            logger.error(f'JSON error loading question pool file: {jde}')
+            sys.exit(255)
+
+        try:
+            for question in question_pool:
+                question_pool_dict[question['question_id']] = question['question']
+        except KeyError:
+            logger.error('Question pool file not loaded correctly (missing JSON keys)')
+            sys.exit(255)
 
     # check that topics were loaded correctly
     try:
-        assert len(question_pool_dict) == 4497
+        assert len(question_pool_dict) == EXPECTED_POOL_SIZE
     except AssertionError:
-        print('Topics file not loaded correctly')
+        logger.error('Question pool file not loaded correctly (expected {EXPECTED_POOL_SIZE} entries, found {len(question_pool_dict)}')
         sys.exit(255)
 
     return question_pool_dict
@@ -88,6 +104,11 @@ def load_run_file(run_file_path: str) -> CasTMiRun:
 
 def validate_turn(turn: Turn, turn_lookup_set: set, question_pool_dict: dict) -> int:
     turn_warnings = 0
+
+    if len(turn.questions) == 0:
+        logger.warning(f'Turn {turn.turn_id} contains no questions!')
+        turn_warnings += 1
+        return turn_warnings
 
     if turn.turn_id in turn_lookup_set:
         for index, question in enumerate(turn.questions):
