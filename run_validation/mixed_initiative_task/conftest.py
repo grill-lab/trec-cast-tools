@@ -9,6 +9,10 @@ sys.path.append(os.path.join(test_root, 'compiled_protobufs'))
 from main import load_turn_ids, load_question_pool, load_run_file
 
 @pytest.fixture
+def test_root_path():
+    yield test_root
+
+@pytest.fixture
 def turn_ids_path():
     yield os.path.join(test_root, 'files', '2022_evaluation_topics_turn_ids.json')
 

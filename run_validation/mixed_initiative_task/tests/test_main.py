@@ -110,3 +110,23 @@ def test_validate_invalid_turn(sample_turn, turn_lookup_set, question_lookup_dic
     del sample_turn.questions[:]
     turn_warnings = validate_turn(sample_turn, turn_lookup_set, {})
     assert(turn_warnings == 1)
+
+def test_validate_run(run_file_path, test_root_path):
+    total_warnings = validate_run(run_file_path, test_root_path)
+    assert(total_warnings == 0)
+
+def test_validate_invalid_run(tmp_path, test_root_path):
+    with pytest.raises(SystemExit) as pytest_exc:
+        _ = validate_run(tmp_path / 'foobar', test_root_path)
+
+    check_sys_exit(pytest_exc)
+
+def test_empty_run(tmp_path, test_root_path):
+    path = tmp_path / 'empty_run.json'
+    with open(path, 'w') as f:
+        f.write('{"run_name": "empty run", "turns": []}')
+
+    with pytest.raises(SystemExit) as pytest_exc:
+        _ = validate_run(path, test_root_path)
+
+    check_sys_exit(pytest_exc)
