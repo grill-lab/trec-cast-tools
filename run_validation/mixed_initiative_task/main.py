@@ -69,7 +69,7 @@ def load_run_file(run_file_path: str) -> CasTMiRun:
         sys.exit(255)
 
     # validate structure
-    with open(args.path_to_run_file) as run_file:
+    with open(run_file_path) as run_file:
         try:
             run = json.load(run_file)
             run = ParseDict(run, CasTMiRun())
