@@ -93,7 +93,7 @@ def validate_turn(turn: Turn, turn_lookup_set: dict, service_stub: PassageValida
 
             # check provenance
             for provenance in response.provenance:
-                previous_score, provenance_score, warning_count = check_provenance(
+                previous_score, provenance_count, warning_count = check_provenance(
                     previous_score, 
                     provenance, 
                     logger, 
