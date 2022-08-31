@@ -82,7 +82,7 @@ def validate_turn(turn: Turn, turn_lookup_set: dict, service_stub: PassageValida
             try:
                 warning_count = validate_passages(service_stub, logger, warning_count, turn)
             except grpc.RpcError as rpce:
-                logger.warning(f'A gRPC error occurred when validating passages ({rpce.code().name})')
+                logger.warning(f'A gRPC error occurred when validating passages (name={rpce.code().name}, message={rpce.details()})')
                 service_errors += 1
 
         # check response and provenance
