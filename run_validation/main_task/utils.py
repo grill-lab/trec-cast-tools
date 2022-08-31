@@ -34,7 +34,7 @@ def check_provenance(previous_score: float, provenance: Provenance, logger: Logg
 
     return previous_score, provenance_count, warning_count
 
-def validate_passages(passage_validation_client: PassageValidatorStub, logger: Logger, warning_count: int, turn: Turn) -> int:
+def validate_passages(passage_validation_client: PassageValidatorStub, logger: Logger, warning_count: int, turn: Turn, timeout: float) -> int:
     # collect passage ids
     passage_validation_request = PassageValidationRequest()
 
@@ -48,7 +48,7 @@ def validate_passages(passage_validation_client: PassageValidatorStub, logger: L
     passage_validation_request.passage_ids.MergeFrom(passage_ids)
 
     # validate ids
-    passage_validation_result = passage_validation_client.validate_passages(passage_validation_request)
+    passage_validation_result = passage_validation_client.validate_passages(passage_validation_request, timeout=timeout)
 
     invalid_indexes = [i for i, passage_validation in enumerate(passage_validation_result.passage_validations) if not passage_validation.is_valid]
     for index in invalid_indexes:
