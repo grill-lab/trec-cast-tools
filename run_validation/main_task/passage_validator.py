@@ -1,5 +1,7 @@
 import sys
 
+import grpc
+
 from compiled_protobufs.passage_validator_pb2 import PassageValidationRequest, PassageValidationResult, PassageValidation
 from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorServicer
 
@@ -20,7 +22,7 @@ class PassageValidator(PassageValidatorServicer):
         print('>> Service ready')
 
     def validate_passages(self,  passage_validation_request: PassageValidationRequest, 
-            context) -> PassageValidationResult:
+            context: grpc.ServicerContext) -> PassageValidationResult:
         """
         Takes in a list of passage ids and checks if they appear in the database
         """
