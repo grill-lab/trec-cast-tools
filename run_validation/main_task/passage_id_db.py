@@ -68,6 +68,7 @@ class PassageIDDatabase:
         return self
 
     def __exit__(self, type, value, traceback):
+        self.cur.close()
         self.close()
 
     def populate(self, hash_file: str, batch_size: int, print_interval: int) -> bool:
@@ -113,13 +114,15 @@ class PassageIDDatabase:
 
     def validate(self, ids: [str]) -> [bool]:
         results = []
+        cur = self.db.cursor()
         for id in ids:
-            self.cur.execute(f'SELECT {PassageIDDatabase.COL_NAME} FROM {PassageIDDatabase.TABLE_NAME} \
+            cur.execute(f'SELECT {PassageIDDatabase.COL_NAME} FROM {PassageIDDatabase.TABLE_NAME} \
                     WHERE {PassageIDDatabase.COL_NAME} = ?', (id, ))
-            result = self.cur.fetchone()
+            result = cur.fetchone()
             results.append(False if result is None else True)
             logger.debug(f'Validate {id} = {result is not None}')
 
+        cur.close()
         return results
 
     def close(self) -> bool:
