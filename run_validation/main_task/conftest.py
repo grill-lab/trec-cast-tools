@@ -107,6 +107,10 @@ def grpc_stub_test(grpc_server_test):
     yield get_service_stub()
 
 @pytest.fixture
+def grpc_stub_test_invalid(grpc_server_test_invalid):
+    yield get_service_stub()
+
+@pytest.fixture
 def grpc_stub_full(grpc_server_full):
     yield get_service_stub()
 
@@ -116,6 +120,17 @@ def grpc_server_test(servicer_params_test):
     add_PassageValidatorServicer_to_server(PassageValidatorServicer(*servicer_params_test), server)
 
     server.add_insecure_port("[::]:8000")
+    server.start()
+    yield server
+
+    server.stop(None)
+
+@pytest.fixture
+def grpc_server_test_invalid(servicer_params_test):
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    add_PassageValidatorServicer_to_server(PassageValidatorServicer(*servicer_params_test), server)
+
+    server.add_insecure_port("[::]:8999")
     server.start()
     yield server
 

@@ -22,7 +22,7 @@ def check_response(response: PassageValidationResult, logger: Logger, warning_co
 def check_provenance(previous_score: float, provenance: Provenance, logger: Logger, turn: Turn, warning_count: int, provenance_count: int) -> (float, int, int):
     if previous_score is None:
         previous_score = provenance.score
-    elif previous_score <= provenance.score:
+    elif previous_score >= provenance.score:
         previous_score = provenance.score
     elif previous_score < provenance.score:
         logger.warning(f"{provenance.id} has a greater score than previous passage. Ranking order for turn {turn.turn_id} not correct")

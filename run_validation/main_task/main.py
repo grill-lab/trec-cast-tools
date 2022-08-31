@@ -48,9 +48,9 @@ def load_turn_lookup_set(turns_path: str) -> dict:
     # check that topics were loaded correctly
     try:
         assert len(turn_lookup_set) == 205
-    except AssertionError as ae:
+    except AssertionError:
         logger.error('Topics file not loaded correctly')
-        raise ae
+        sys.exit(255)
 
     return turn_lookup_set
 
@@ -62,7 +62,7 @@ def load_run_file(run_file_path: str) -> CastRun:
             run = ParseDict(run, CastRun())
         except Exception as e:
             logger.error(f'Run file not in the right format ({e})')
-            raise Exception(f'Run file not in the right format ({e})')
+            sys.exit(255)
 
     return run
 
@@ -93,7 +93,7 @@ def validate_turn(turn: Turn, turn_lookup_set: dict, service_stub: PassageValida
 
             # check provenance
             for provenance in response.provenance:
-                previous_score, provenance_score, warning_count = check_provenance(
+                previous_score, provenance_count, warning_count = check_provenance(
                     previous_score, 
                     provenance, 
                     logger, 
@@ -119,11 +119,11 @@ def validate_run(run: CastRun, turn_lookup_set: dict, service_stub: PassageValid
 
         if total_warnings > max_warnings:
             logger.error(f'Maximum number of warnings exceeded ({total_warnings} > {max_warnings}), aborting!')
-            return turns_validated, service_errors, total_warnings
+            sys.exit(255)
 
         if service_errors > 0 and strict:
             logger.error('Validation service errors encountered and strict mode enabled')
-            return turns_validated, service_errors, total_warnings
+            sys.exit(255)
 
     logger.info(f'Validation completed on {turns_validated}/{len(run.turns)} turns with {total_warnings} warnings, {service_errors} service errors')
     return turns_validated, service_errors, total_warnings
