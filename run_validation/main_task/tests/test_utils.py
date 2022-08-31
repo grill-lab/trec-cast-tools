@@ -2,6 +2,7 @@ import pytest
 
 from compiled_protobufs.passage_validator_pb2 import PassageValidationRequest
 from utils import validate_passages
+from main import GRPC_DEFAULT_TIMEOUT
 
 def build_request(ids):
     request = PassageValidationRequest()
@@ -13,7 +14,7 @@ def get_invalid_indices(response):
 
 def test_validate_passages(grpc_stub_test, test_logger, sample_turn):
     warning_count = 0
-    warning_count = validate_passages(grpc_stub_test, test_logger, warning_count, sample_turn)
+    warning_count = validate_passages(grpc_stub_test, test_logger, warning_count, sample_turn, GRPC_DEFAULT_TIMEOUT)
 
     assert(warning_count == 4)
 

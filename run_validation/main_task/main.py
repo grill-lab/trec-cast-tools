@@ -13,6 +13,8 @@ from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorStub
 from compiled_protobufs.run_pb2 import CastRun, Turn
 from utils import check_provenance, validate_passages, check_response
 
+GRPC_DEFAULT_TIMEOUT = 3.0
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -167,7 +169,7 @@ if __name__ == '__main__':
     ap.add_argument('-s', '--strict', help='Abort if any passage validation service errors occur',
                     action='store_true')
     ap.add_argument('-t', '--timeout', help='Set the gRPC timeout (secs) for contacting the validation service',
-                    type=float, default=3.0)
+                    type=float, default=GRPC_DEFAULT_TIMEOUT)
     args = ap.parse_args()
 
     validate(args.path_to_run_file, args.fileroot, args.max_warnings, args.skip_passage_validation, args.strict, args.timeout)
