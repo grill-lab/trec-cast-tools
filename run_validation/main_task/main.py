@@ -130,7 +130,7 @@ def validate_run(run: CastRun, turn_lookup_set: dict, service_stub: PassageValid
     logger.info(f'Validation completed on {turns_validated}/{len(run.turns)} turns with {total_warnings} warnings, {service_errors} service errors')
     return turns_validated, service_errors, total_warnings
 
-def validate(run_file_path: str, fileroot: str, max_warnings: int, skip_validation: bool, strict: bool, timeout: float) -> (int, int, int):
+def validate(run_file_path: str, fileroot: str, max_warnings: int, skip_validation: bool, strict: bool, timeout: float = GRPC_DEFAULT_TIMEOUT) -> (int, int, int):
     run_file_name = PurePath(run_file_path).name
     fileHandler = logging.FileHandler(filename=f'{run_file_name}.errlog')
     fileHandler.setFormatter(formatter)
