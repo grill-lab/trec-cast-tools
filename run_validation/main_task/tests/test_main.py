@@ -47,6 +47,32 @@ def test_validate_invalid_run_file(tmp_path):
     assert pytest_exc.type == SystemExit
     assert pytest_exc.value.code == 255
 
+def test_validate_run_file_missing_run_name(tmp_path, run_file_path):
+    tmp_file = tmp_path / 'missing_run_name.json'
+    json_str = '{ "run_type": "manual", "turns": [] }'
+
+    with open(tmp_file, 'w') as tf:
+        tf.write(json_str)
+
+    with pytest.raises(SystemExit) as pytest_exc:
+        _ = load_run_file(tmp_file)
+
+    assert pytest_exc.type == SystemExit
+    assert pytest_exc.value.code == 255
+
+def test_validate_run_file_missing_turns(tmp_path, run_file_path):
+    tmp_file = tmp_path / 'missing_turns.json'
+    json_str = '{ "run_type": "manual", "run_name": "missing_turns"}'
+
+    with open(tmp_file, 'w') as tf:
+        tf.write(json_str)
+
+    with pytest.raises(SystemExit) as pytest_exc:
+        _ = load_run_file(tmp_file)
+
+    assert pytest_exc.type == SystemExit
+    assert pytest_exc.value.code == 255
+
 def test_validate_missing_run_file():
     with pytest.raises(OSError):
         _ = load_run_file('foobar')

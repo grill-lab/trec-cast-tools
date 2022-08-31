@@ -59,6 +59,13 @@ def load_run_file(run_file_path: str) -> CastRun:
     with open(run_file_path, 'r', encoding='utf-8') as run_file:
         try:
             run = json.load(run_file)
+            # check for expected attributes
+            if 'run_name' not in run or 'run_type' not in run:
+                raise Exception('Missing run_name/run_type entry')
+
+            if 'turns' not in run:
+                raise Exception('Missing turns entry')
+
             run = ParseDict(run, CastRun())
         except Exception as e:
             logger.error(f'Run file not in the right format ({e})')
