@@ -116,7 +116,7 @@ message Turn {
     bool requires_initiative = 18;
 
     // utteranc_type
-    string utterance_type = 29;
+    string utterance_type = 19;
 
     // response
     string response = 20;
