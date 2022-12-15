@@ -56,10 +56,9 @@ message Source {
 // Turn is a single step in the conversation, representing a single
 // user utterance, roughly corresponding to a single 'query'.
 message Turn {
-
     // A numeric turn identifiers for this turn indicating its position
     // in the dialog.
-    int32 number = 1;
+    string number = 1;
 
     // Required: the user query / utterance for this turn.
     string raw_utterance = 2;
@@ -89,10 +88,10 @@ message Turn {
     string custom_rewritten_utterance = 9;
 
     // Dependent parent turn for query dependence
-    repeated int32 query_turn_dependence = 10;
+    repeated string query_turn_dependence = 10;
 
     // Dependent parent turn for result dependence
-    int32 result_turn_dependence = 11;
+    repeated string result_turn_dependence = 11;
 
     // Most relevant passage from the canonical results
     string passage = 12;
@@ -100,6 +99,27 @@ message Turn {
     // ID of the passage from the canonical result based on Spacy passage chunking.
     int32 passage_id = 13;
 
+
+    // ID of the parent
+    string parent = 14;
+
+    // If System or User turn
+    string participant = 15;
+
+    // provenance
+    repeated string provenance = 16;
+
+    // utterance
+    string sub_topic = 17;
+
+    // requires  initiative
+    bool requires_initiative = 18;
+
+    // utteranc_type
+    string utterance_type = 19;
+
+    // response
+    string response = 20;
 
 
 }
