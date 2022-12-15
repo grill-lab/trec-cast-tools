@@ -21,15 +21,16 @@ with open(f"{run_file_name}.run", "w") as run_file:
     for turn in run.turns:
         provenance_list = list()
         provenance_set = set()
+        current_score = 100
         for response in turn.responses:
             for provenance in response.provenance:
                 if provenance.id not in provenance_set:
                     # update provenance score
-                    provenance.score = (1 / (response.rank+1)) * provenance.score
+                    provenance.score = current_score
+                    current_score -= 1
                     provenance_list.append(provenance)
                     provenance_set.add(provenance.id)
-        # sort list
-        provenance_list.sort(key=lambda provenance: provenance.score, reverse=True)
+                    
         # write to file
         for rank, provenance in enumerate(provenance_list):
             run_file.write(f"{turn.turn_id}\tQ0\t{provenance.id}\t{rank+1}\t{provenance.score}\t{run.run_name}\n")
