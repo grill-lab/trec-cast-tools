@@ -59,6 +59,13 @@ def load_run_file(run_file_path: str) -> CastRun:
     with open(run_file_path, 'r', encoding='utf-8') as run_file:
         try:
             run = json.load(run_file)
+            # check for expected attributes
+            if 'run_name' not in run or 'run_type' not in run:
+                raise Exception('Missing run_name/run_type entry')
+
+            if 'turns' not in run:
+                raise Exception('Missing turns entry')
+
             run = ParseDict(run, CastRun())
         except Exception as e:
             logger.error(f'Run file not in the right format ({e})')
@@ -82,7 +89,7 @@ def validate_turn(turn: Turn, turn_lookup_set: dict, service_stub: PassageValida
             try:
                 warning_count = validate_passages(service_stub, logger, warning_count, turn)
             except grpc.RpcError as rpce:
-                logger.warning(f'A gRPC error occurred when validating passages ({rpce.code().name})')
+                logger.warning(f'A gRPC error occurred when validating passages (name={rpce.code().name}, message={rpce.details()})')
                 service_errors += 1
 
         # check response and provenance
