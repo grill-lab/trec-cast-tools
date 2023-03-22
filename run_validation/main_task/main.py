@@ -13,6 +13,8 @@ from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorStub
 from compiled_protobufs.run_pb2 import CastRun, Turn
 from utils import check_provenance, validate_passages, check_response
 
+GRPC_DEFAULT_TIMEOUT = 3.0
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -66,7 +68,7 @@ def load_run_file(run_file_path: str) -> CastRun:
 
     return run
 
-def validate_turn(turn: Turn, turn_lookup_set: dict, service_stub: PassageValidatorStub) -> (int, bool):
+def validate_turn(turn: Turn, turn_lookup_set: dict, service_stub: PassageValidatorStub, timeout: float) -> (int, bool):
     warning_count, service_errors = 0, 0
 
     # check turns are valid
@@ -80,7 +82,7 @@ def validate_turn(turn: Turn, turn_lookup_set: dict, service_stub: PassageValida
         # will be None if skip_passage_validation was used
         if service_stub is not None:
             try:
-                warning_count = validate_passages(service_stub, logger, warning_count, turn)
+                warning_count = validate_passages(service_stub, logger, warning_count, turn, timeout)
             except grpc.RpcError as rpce:
                 logger.warning(f'A gRPC error occurred when validating passages ({rpce.code().name})')
                 service_errors += 1
@@ -107,12 +109,12 @@ def validate_turn(turn: Turn, turn_lookup_set: dict, service_stub: PassageValida
 
     return warning_count, service_errors
 
-def validate_run(run: CastRun, turn_lookup_set: dict, service_stub: PassageValidatorStub, max_warnings: int, strict: bool) -> (int, int, int):
+def validate_run(run: CastRun, turn_lookup_set: dict, service_stub: PassageValidatorStub, max_warnings: int, strict: bool, timeout: float) -> (int, int, int):
     total_warnings, service_errors = 0, 0
     turns_validated = 0
 
     for turn in run.turns:
-        _warnings, _service_errors = validate_turn(turn, turn_lookup_set, service_stub)
+        _warnings, _service_errors = validate_turn(turn, turn_lookup_set, service_stub, timeout)
         total_warnings += _warnings
         service_errors += _service_errors
         turns_validated += 1
@@ -128,7 +130,7 @@ def validate_run(run: CastRun, turn_lookup_set: dict, service_stub: PassageValid
     logger.info(f'Validation completed on {turns_validated}/{len(run.turns)} turns with {total_warnings} warnings, {service_errors} service errors')
     return turns_validated, service_errors, total_warnings
 
-def validate(run_file_path: str, fileroot: str, max_warnings: int, skip_validation: bool, strict: bool) -> (int, int, int):
+def validate(run_file_path: str, fileroot: str, max_warnings: int, skip_validation: bool, strict: bool, timeout: float = GRPC_DEFAULT_TIMEOUT) -> (int, int, int):
     run_file_name = PurePath(run_file_path).name
     fileHandler = logging.FileHandler(filename=f'{run_file_name}.errlog')
     fileHandler.setFormatter(formatter)
@@ -149,22 +151,25 @@ def validate(run_file_path: str, fileroot: str, max_warnings: int, skip_validati
         logger.warning('Loaded run file has 0 turns, not performing any validation!')
         return len(run.turns)
    
-    turns_validated, service_errors, total_warnings = validate_run(run, turn_lookup_set, validator_stub, max_warnings, strict)
+    turns_validated, service_errors, total_warnings = validate_run(run, turn_lookup_set, validator_stub, max_warnings, strict, timeout)
 
     return turns_validated, service_errors, total_warnings
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description='TREC 2022 CAsT main task validator',
                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    ap.add_argument('task_name')
-    ap.add_argument('path_to_run_file')
+    ap.add_argument('task_name', help='CAST is currently the only supported option')
+    ap.add_argument('path_to_run_file', help='Path to the JSON-formatted run file to be validated')
     ap.add_argument('-f', '--fileroot', help='Location of data files',
                     default='.')
-    ap.add_argument('--skip_passage_validation', action='store_true')
-    ap.add_argument('-m', '--max_warnings', help='Maximum number of warnings to allow',
+    ap.add_argument('--skip_passage_validation', help='Do NOT validate passage IDs using the validator service',
+                    action='store_true')
+    ap.add_argument('-m', '--max_warnings', help='Maximum number of validation warnings to allow',
                     type=int, default=25)
     ap.add_argument('-s', '--strict', help='Abort if any passage validation service errors occur',
                     action='store_true')
+    ap.add_argument('-t', '--timeout', help='Set the gRPC timeout (secs) for contacting the validation service',
+                    type=float, default=GRPC_DEFAULT_TIMEOUT)
     args = ap.parse_args()
 
-    validate(args.path_to_run_file, args.fileroot, args.max_warnings, args.skip_passage_validation, args.strict)
+    validate(args.path_to_run_file, args.fileroot, args.max_warnings, args.skip_passage_validation, args.strict, args.timeout)

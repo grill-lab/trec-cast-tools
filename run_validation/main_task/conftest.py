@@ -16,7 +16,7 @@ from compiled_protobufs.passage_validator_pb2_grpc import PassageValidatorStub
 from compiled_protobufs.passage_validator_pb2_grpc import add_PassageValidatorServicer_to_server
 from passage_id_db import PassageIDDatabase
 from passage_validator_servicer import EXPECTED_ID_COUNT
-from main import load_run_file, get_service_stub
+from main import load_run_file, get_service_stub, GRPC_DEFAULT_TIMEOUT
 
 # see https://docs.pytest.org/en/latest/example/simple.html#control-skipping-of-tests-according-to-command-line-option
 def pytest_addoption(parser):
@@ -81,6 +81,7 @@ def default_validate_args():
         skip_passage_validation=False,
         fileroot=test_root,
         strict=False,
+        timeout=GRPC_DEFAULT_TIMEOUT,
     )
 
 @pytest.fixture
